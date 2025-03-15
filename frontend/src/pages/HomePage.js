@@ -1,32 +1,22 @@
-import React, { useContext } from "react";
-import { WalletContext } from "../context/WalletContext";
-import { Link } from "react-router-dom";
+import React from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const HomePage = () => {
-  const { walletAddress, connectWallet } = useContext(WalletContext);
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">XRP NFT System</h1>
-
-      {!walletAddress ? (
-        <button
-          onClick={connectWallet}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Connect Wallet
-        </button>
-      ) : (
-        <>
-          <p className="mt-4 text-lg">Connected: {walletAddress}</p>
-          <Link to="/collection">
-            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-              View Collection
-            </button>
-          </Link>
-        </>
-      )}
-    </div>
+    <>
+      <Header />
+      <main>
+        <section className="hv6-banner-area">
+          <div className="container">
+            <h1>Discover Digital Art in NFTMart</h1>
+            <p>Collect or Sell Creative NFTs</p>
+            <a href="/explore" className="btn btn-theme-4">Explore</a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 };
 

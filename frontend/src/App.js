@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { WalletProvider } from "./context/WalletContext";
 import HomePage from "./pages/HomePage";
-import CollectionPage from "./pages/CollectionPage";
+import ExplorePage from "./pages/ExplorePage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/collection" element={<CollectionPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </Router>
     </WalletProvider>
