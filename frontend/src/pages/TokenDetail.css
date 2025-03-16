@@ -1,0 +1,13 @@
+/* TokenDetail.css */
+/* 使 TokenDetail 页面居中显示，便于阅读 */
+.token-detail-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* 水平居中 */
+    justify-content: center;   /* 垂直居中 */
+    padding: 40px;
+    height: calc(100vh - 60px); /* 减去顶部栏的高度 */
+    background-color: #181a1b;  /* 与全局背景一致 */
+    color: #e6edf3;           /* 与全局文字颜色一致 */
+  }
+  

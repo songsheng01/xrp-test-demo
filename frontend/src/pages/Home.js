@@ -6,10 +6,20 @@ import "./Home.css";
 const Home = () => {
   const { walletAddress, xrpBalance, connectWallet } = useContext(WalletContext);
 
-  // Function to shorten wallet address (e.g., "rXy...abc")
+  // Function to shorten wallet address
   const shortenAddress = (address) => {
     if (!address) return "Please connect wallet";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  // 添加 id 和 description 字段
+  const tokenData = {
+    id: "tokenA",
+    name: "Example Card",
+    description: "I wouldn't buy this.",
+    price: 12.5,
+    change: 3.2,
+    image: "https://randomuser.me/api/portraits/men/1.jpg"
   };
 
   return (
@@ -34,7 +44,6 @@ const Home = () => {
           <div className="profile-section">
             <button className="profile-button">My Profile</button>
             <div className="wallet-address">{shortenAddress(walletAddress)}</div>
-            {/* Display XRP Balance if logged in */}
             {walletAddress && (
               <div className="xrp-balance">XRP Balance: {xrpBalance} XRP</div>
             )}
@@ -45,7 +54,7 @@ const Home = () => {
 
         {/* 🔹 Token Grid */}
         <div className="token-grid">
-          <TokenCard token={{ name: "Token A", price: 12.5, change: 3.2, image: "https://randomuser.me/api/portraits/men/1.jpg" }} />
+          <TokenCard token={tokenData} />
         </div>
       </div>
     </div>
