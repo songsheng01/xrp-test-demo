@@ -44,6 +44,7 @@ router.post("/list", async (req,res)=>{
   const {token,price,quantity,usr_addr} =  req.body;
   try{
     await uploadSellOrder(token,price,quantity,usr_addr);
+    res.status(200);
   }catch(error){
     console.error("Error uploading sold order:", error);
     throw error;
