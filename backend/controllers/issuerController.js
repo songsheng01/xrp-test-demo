@@ -6,7 +6,7 @@ dotenv.config();
 /**
  * Sets up the issuer wallet with required XRPL flags (only needs to run once).
  */
-export const setupIssuerAccount = async () => {
+export const setupIssuerWallet = async () => {
   try {
     // Connect to XRPL
     const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
@@ -16,29 +16,29 @@ export const setupIssuerAccount = async () => {
     const issuerWallet = xrpl.Wallet.fromSeed(process.env.ISSUER_SECRET);
     const issuerAddress = issuerWallet.address;
 
-    console.log(`🔹 Setting up issuer account: ${issuerAddress}`);
+    console.log(`🔹 Setting up issuer wallet: ${issuerAddress}`);
 
-    // Configure issuer account settings
+    // Configure issuer wallet settings
     const accountSetTx = {
       TransactionType: "AccountSet",
       Account: issuerAddress,
       SetFlag: xrpl.AccountSetAsfFlags.asfDefaultRipple, // Enable rippling for issued tokens
     };
 
-    const preparedAccountSet = await client.autofill(accountSetTx);
-    const signedAccountSet = issuerWallet.sign(preparedAccountSet);
-    const accountSetResult = await client.submitAndWait(signedAccountSet.tx_blob);
+    const prepared = await client.autofill(accountSetTx);
+    const signed = issuerWallet.sign(prepared);
+    const result = await client.submitAndWait(signed.tx_blob);
 
     await client.disconnect();
 
-    if (accountSetResult.result.meta.TransactionResult !== "tesSUCCESS") {
-      throw new Error("Failed to set issuer account flags.");
+    if (result.result.meta.TransactionResult !== "tesSUCCESS") {
+      throw new Error("Failed to enable rippling.");
     }
 
-    console.log(`✅ Issuer account setup complete.`);
-    return { success: true, message: "Issuer account configured successfully." };
+    console.log(`✅ Issuer wallet is now configured for issuing tokens.`);
+    return { success: true, message: "Issuer wallet setup complete." };
   } catch (error) {
-    console.error("Error setting up issuer account:", error);
+    console.error("Error setting up issuer wallet:", error);
     return { success: false, error: error.message };
   }
 };
