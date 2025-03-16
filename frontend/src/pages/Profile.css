@@ -227,12 +227,136 @@ body {
   padding: 5px 0;
 }
 
-.xrp-balance {
-  background: #3a3d40;
-  padding: 10px;
+.marketplace-button {
+  padding: 10px 20px;
+  border: none;
+  background: linear-gradient(135deg, #ff8c00, #ff3c00);
+  color: white;
   border-radius: 8px;
-  font-size: 14px;
-  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  width: 100%;
+  align-items: center;
+}
+
+.list-card-button,
+.claim-card-button {
+  padding: 10px 20px;
+  border: none;
+  background: linear-gradient(135deg, #00c3ff, #3b82f6);
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
   width: 90%;
-  margin-top: 10px;
+}
+
+.holdings-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Darker background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px); /* ✅ Adds a blur effect */
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1c1e, #2d2f31);
+  padding: 25px;
+  border-radius: 12px;
+  width: 60%;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.1); /* ✅ Subtle border */
+  box-shadow: 0px 0px 15px rgba(255, 0, 255, 0.2); /* ✅ Neon glow effect */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.listing-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.listing-table th,
+.listing-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e6edf3;
+  font-size: 16px;
+  text-align: center;
+}
+
+.listing-table th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.approved {
+  color: #10b981 !important;
+  font-weight: bold;
+}
+
+.pending {
+  color: #facc15 !important;
+  font-weight: bold;
+}
+
+.action-button {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #00c3ff, #3b82f6) !important; /* ✅ Force background */
+  color: white !important; /* ✅ Force text color */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.action-button:hover {
+  background: linear-gradient(135deg, #3b82f6, #00c3ff) !important;
+  box-shadow: 0px 0px 8px rgba(0, 195, 255, 0.6) !important;
+}
+
+.close-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff3c00, #ff8c00) !important;
+  color: white !important;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+.close-button:hover {
+  background: linear-gradient(135deg, #ff8c00, #ff3c00) !important;
+  box-shadow: 0px 0px 8px rgba(255, 60, 0, 0.6) !important;
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #facc15;
+  text-align: center;
 }

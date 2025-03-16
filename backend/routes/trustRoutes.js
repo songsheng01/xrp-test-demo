@@ -3,14 +3,14 @@ import { checkOrPromptTrustLine } from "../controllers/trustController.js";
 
 const router = express.Router();
 
-router.get("/check-trust", async (req, res) => {
-  const { userAddress, currencyCode } = req.query;
+router.post("/check-trust", async (req, res) => {
+  const { userAddress, currencyHex } = req.body;
 
-  if (!userAddress || !currencyCode) {
+  if (!userAddress || !currencyHex) {
     return res.status(400).json({ error: "Missing parameters." });
   }
 
-  const result = await checkOrPromptTrustLine(userAddress, currencyCode);
+  const result = await checkOrPromptTrustLine(userAddress, currencyHex);
   res.json(result);
 });
 
