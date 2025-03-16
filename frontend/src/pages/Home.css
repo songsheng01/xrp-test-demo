@@ -226,3 +226,13 @@ body {
   font-size: 12px;
   padding: 5px 0;
 }
+
+.xrp-balance {
+  background: #3a3d40;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  width: 90%;
+  margin-top: 10px;
+}

@@ -1,3 +1,4 @@
+import xrpl from "xrpl";
 /**
  * Asks a user to authorize and send XRP to another wallet.
  * @param {string} sender - The sender's wallet address.

@@ -1,0 +1,89 @@
+.container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+  }
+  
+  .leftImg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .right {
+    flex: 1;
+    padding: 20px;
+    background: #fff;
+    overflow-y: auto;
+  }
+  
+  /* 标题黑色 */
+  .right h1 {
+    color: #000;
+  }
+  
+  /* 图表容器：宽度80%居中显示，高度300px，距离标题有间距 */
+  .chartContainer {
+    width: 80%;
+    height: 300px;
+    margin: 100px auto 0 auto;
+  }
+  
+  /* 灰色框显示当前价格和购买按钮 */
+  .purchaseSection {
+    width: 80%;
+    background-color: #f5f5f5;
+    margin: 20px auto;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+  }
+  
+  .currentPrice {
+    font-size: 18px;
+    color: #000;
+  }
+  
+  .buyButton {
+    background-color: #8884d8;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* 按钮区域，居中显示 */
+  .rangeButtonContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .rangeButton {
+    font-size: 18px;
+    padding: 12px 24px;
+    margin: 0 10px;
+    border: 1px solid #888;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* 当前选中按钮高亮 */
+  .activeButton {
+    background-color: #8884d8;
+    color: #fff;
+    border-color: #8884d8;
+  }
+  

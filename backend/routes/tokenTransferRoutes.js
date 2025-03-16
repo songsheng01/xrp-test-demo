@@ -47,7 +47,7 @@ router.post("/list", async (req,res)=>{
   const {token,price,quantity,usr_addr} =  req.body;
   try{
     await uploadSellOrder(token,price,quantity,usr_addr);
-    res.status(200);
+    res.status(200).json({"success":true});
   }catch(error){
     console.error("Error uploading sold order:", error);
     throw error;
@@ -55,13 +55,17 @@ router.post("/list", async (req,res)=>{
 });
 
 router.post("/sold",async (req,res) => {
-  const {token,quantity,maxPrice} = req.body;
+  const {token,quantity,maxPrice,buyerAddr} = req.body;
+  let total_XPR = 0;
   try {
     const { purchasedOrders, remaining, lowestRemainingPrice } = await buyProduct(token,quantity,maxPrice);
     for(let i = 0; i < purchasedOrders.length; i++){
       const order = purchasedOrders[i];
+      total_XPR += order.price * order.quantityBought;
       await sendXRP(process.env.WALLET_ADDRESS,order.sellerAddr,order.price * order.quantityBought);
     }
+    const response = await sendXRP(buyerAddr,process.env.WALLET_ADDRESS,total_XPR);
+    console.log(response);
     await updatePrice(token,lowestRemainingPrice);
     res.status(200).json({remain:remaining});
   }catch(error){

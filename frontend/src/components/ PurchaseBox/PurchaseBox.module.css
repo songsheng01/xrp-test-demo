@@ -1,0 +1,146 @@
+.offerSection {
+  margin-top: 50px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 16px;
+  width: 90%; /* 居中显示，可结合 margin: 0 auto 使用 */
+  box-sizing: border-box;
+  margin: 50px auto 20px auto;
+}
+
+/* 顶栏：左右布局 */
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* 左侧状态文字 */
+.status {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 右侧按钮：大一些，突出操作 */
+.offerButton {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.offerButton:hover {
+  background-color: #0052cc;
+}
+
+/* 次栏：显示报价 */
+.offerInfo {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* 特性/说明行：左右排列，或根据需要换行 */
+.featuresRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 每个特性项 */
+.featureItem {
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ---------- 模态窗样式 ---------- */
+
+/* 模态窗的全屏灰色半透明背景 */
+.modalOverlay {
+  position: fixed; /* 固定定位，覆盖全屏 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* 确保在最前 */
+}
+
+/* 模态窗主体内容 */
+.modalContent {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 600px;  /* 调整为 600px，使弹窗更大 */
+  max-width: 90%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 标题颜色改为黑色 */
+.modalContent h2 {
+  color: #000; 
+}
+
+/* 表单行 */
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #333;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+}
+
+.submitButton {
+  background-color: #0066ff;
+  color: #fff;
+}
+
+.submitButton:hover {
+  background-color: #0052cc;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  color: #333;
+}
+
+.cancelButton:hover {
+  background-color: #bbb;
+}
