@@ -40,7 +40,7 @@ export const checkOrPromptTrustLine = async (userAddress, currencyHex) => {
       LimitAmount: {
         currency: currencyHex,
         issuer: issuerAddress,
-        value: "1000000000", // Arbitrary large limit
+        value: "10000000", // Arbitrary large limit
       },
     };
 

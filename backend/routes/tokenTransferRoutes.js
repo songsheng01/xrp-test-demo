@@ -3,6 +3,7 @@ import { sendTokens } from "../controllers/tokenTransferController.js";
 import { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll,searchByType } from "../models/dbOperation.js";
 import { uploadSellOrder, buyProduct } from "../models/orderOperation.js";
 import { sendXRP } from "../controllers/xrpTransferController.js";
+import { checkOrPromptTrustLine } from "../controllers/trustController.js";
 import xrpl from 'xrpl';
 import dotenv from "dotenv";
 
@@ -33,7 +34,9 @@ router.post("/create", async (req, res) => {
     console.log(token);
     await createNewNft(token,type,"https://test.com",pcs,-1);
     result = await sendTokens(recipient, token, "1000");
-  }else {
+  } else {
+    const token = generateCurrencyHex("TEST");
+    console.log(token);
     await addExisitsNft(terms[0].nft_token,pcs);
     result = await sendTokens(recipient, terms[0].nft_token, "1000");
   }

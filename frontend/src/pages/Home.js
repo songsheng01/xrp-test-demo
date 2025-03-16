@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { WalletContext } from "../context/WalletContext";
+import { useNavigate } from "react-router-dom"; // ✅ Import navigation hook
 import TokenCard from "../components/TokenCard";
 import "./Home.css";
 
@@ -10,6 +11,16 @@ const Home = () => {
   const shortenAddress = (address) => {
     if (!address) return "Please connect wallet";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const navigate = useNavigate(); // ✅ Initialize navigation
+
+  const handleProfileClick = () => {
+    if (walletAddress) {
+      navigate("/profile"); // ✅ Redirect if logged in
+    } else {
+      connectWallet(); // ✅ Prompt wallet connection
+    }
   };
 
   return (
@@ -32,7 +43,7 @@ const Home = () => {
         {/* 🔹 Sidebar */}
         <div className="sidebar">
           <div className="profile-section">
-            <button className="profile-button">My Profile</button>
+            <button className="profile-button" onClick={handleProfileClick}>My Profile</button>
             <div className="wallet-address">{shortenAddress(walletAddress)}</div>
             {/* Display XRP Balance if logged in */}
             {walletAddress && (
