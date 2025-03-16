@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import styles from './tokenPage.module.css';
 import PurchaseBox from '../../components/ PurchaseBox/PurchaseBox';
 import DetailBox from '../../components/DetailBox/DetailBox';
-import sampleImage from '../../assets/SV3pt5_EN_1.png';
+// import sampleImage from '../../assets/SV3pt5_EN_1.png';
+import { useLocation } from 'react-router-dom';
+
 import {
   LineChart,
   Line,
@@ -41,6 +43,10 @@ function TokenPage() {
   const [selectedRange, setSelectedRange] = useState('1d'); // 默认选中 1d
   const ranges = ['1d', '3d', '1m', '1y'];
 
+  const location = useLocation();
+  // 通过 location.state 获取传递的 token 数据
+  const token = location.state?.token;
+  console.log(token);
   // 不同时间区间对应的模拟数据
   const dataMap = {
     '1d': [
@@ -95,7 +101,7 @@ function TokenPage() {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <img src={sampleImage} alt="test" className={styles.leftImg} />
+        <img src={token.image} alt="test" className={styles.leftImg} />
       </div>
       <div className={styles.right}>
         <h1>
