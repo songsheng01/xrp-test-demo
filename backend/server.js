@@ -1,6 +1,11 @@
 import express from "express";
 import cors from "cors";
-import nftRoutes from "./routes/nftRoutes.js";
+import trustRoutes from "./routes/trustRoutes.js";
+import tokenTransferRoutes from "./routes/tokenTransferRoutes.js";
+import xrpTransferRoutes from "./routes/xrpTransferRoutes.js";
+import issuerRoutes from "./routes/issuerRoutes.js";
+import { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll } from "./models/dbOperation.js"
+import { uploadSellOrder, buyProduct } from "./models/orderOperation.js"
 import dotenv from "dotenv";
 
 // Load environment variables
@@ -14,7 +19,10 @@ app.use(cors());
 app.use(express.json()); // Enables JSON request body parsing
 
 // Routes
-app.use("/api", nftRoutes);
+app.use("/api", trustRoutes);
+app.use("/api", tokenTransferRoutes);
+app.use("/api", xrpTransferRoutes);
+app.use("/api", issuerRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
