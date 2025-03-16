@@ -1,3 +1,4 @@
+import xrpl from 'xrpl';
 /**
  * Sends tokens (IOUs) from the issuer wallet to a recipient.
  * @param {string} recipient - The recipient's wallet address.
@@ -34,8 +35,8 @@ export const sendTokens = async (recipient, currencyHex, amount) => {
       throw new Error(`Token transfer failed: ${result.result.meta.TransactionResult}`);
     }
 
-    console.log(`✅ Sent ${amount} ${currencyCode} to ${recipient}`);
-    return { success: true, recipient, currencyCode, amount };
+    console.log(`✅ Sent ${amount} ${currencyHex} to ${recipient}`);
+    return { success: true, recipient, currencyHex, amount };
   } catch (error) {
     console.error("Error sending tokens:", error);
     return { success: false, error: error.message };

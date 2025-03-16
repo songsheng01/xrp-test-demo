@@ -1,5 +1,6 @@
 import express from "express";
 import { setupIssuerWallet } from "../controllers/issuerController.js";
+import { searchByType,createNewNft } from "../models/dbOperation.js";
 
 const router = express.Router();
 

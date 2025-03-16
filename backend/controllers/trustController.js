@@ -9,14 +9,13 @@ dotenv.config();
  * @param {string} userAddress - The user's wallet address.
  * @param {string} currencyCode - The token's currency code (e.g., "CRD").
  */
-export const checkOrPromptTrustLine = async (userAddress, currencyCode) => {
+export const checkOrPromptTrustLine = async (userAddress, currencyHex) => {
   try {
     const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
     await client.connect();
 
     const issuerAddress = process.env.ISSUER_ADDRESS;
-    const currencyHex = xrpl.convertStringToHex(currencyCode).padEnd(40, "0");
-
+    
     // Fetch user's trust lines
     const response = await client.request({
       command: "account_lines",

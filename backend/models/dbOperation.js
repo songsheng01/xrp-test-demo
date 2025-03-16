@@ -70,6 +70,7 @@ async function deleteRandomNft(nft_token) {
       }
 
       const indexToRemove = Math.floor(Math.random() * nft_list.length);
+      const ret = nft_list[indexToRemove];
       nft_list.splice(indexToRemove, 1);
 
       const updateParams = {
@@ -83,7 +84,7 @@ async function deleteRandomNft(nft_token) {
       };
       const updateCommand = new UpdateCommand(updateParams);
       const response = await docClient.send(updateCommand);
-      return response;
+      return ret;
     } catch (error) {
       console.error("Error deleting an element from nft_list:", error);
       throw error;
@@ -132,4 +133,27 @@ async function scanAll() {
     }
 }
 
-export { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll }
+async function searchByType(type) {
+  const params = {
+    TableName: "xprl_nft_table",
+    IndexName: "type-index",
+    KeyConditionExpression: "#t = :p",
+    ExpressionAttributeNames: {
+      "#t": "type"
+    },
+    ExpressionAttributeValues: {
+      ":p": String(type.toLowerCase())
+    }
+  };
+
+  try {
+    const command = new QueryCommand(params);
+    const response = await docClient.send(command);
+    return response.Items;
+  } catch (error) {
+    console.error("Error getting card Info:", error);
+    throw error;
+  }
+}
+
+export { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll,searchByType }
