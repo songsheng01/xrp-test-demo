@@ -4,7 +4,12 @@ import { WalletContext } from "../context/WalletContext";
 import { isInstalled, signTransaction } from "@gemwallet/api"; // ✅ Import GemWallet API
 import axios from "axios";
 import "./Profile.css";
-import xrpl from "xrpl"
+import xrpl from "xrpl";
+import sampleImage1 from "../assets/h1.png";
+import sampleImage2 from "../assets/h2.png";
+import sampleImage3 from "../assets/h3.png";
+// import TokenCard from "../components/TokenCard"; // Added import for TokenCard
+import OwnTokenCard from "../components/OwnTokenCard";
 
 const Profile = () => {
   const { walletAddress, xrpBalance } = useContext(WalletContext);
@@ -76,7 +81,6 @@ const Profile = () => {
     setLoading(false);
   };
 
-
   return (
     <div className="home-container">
       {/* 🔹 Top Bar */}
@@ -110,9 +114,10 @@ const Profile = () => {
         {/* 🔹 Holdings Grid */}
         <div className="token-grid">
           <h2 className="holdings-title">My Holdings</h2>
-          <div className="token-card">Holding 1</div>
-          <div className="token-card">Holding 2</div>
-          <div className="token-card">Holding 3</div>
+          {/* Added 3 TokenCards using the sampleImage */}
+          <OwnTokenCard token={{ name: "Holding 1", image: sampleImage1 }} />
+          <OwnTokenCard token={{ name: "Holding 2", image: sampleImage2 }} />
+          <OwnTokenCard token={{ name: "Holding 3", image: sampleImage3 }} />
         </div>
       </div>
 
