@@ -35,7 +35,7 @@ function DetailBox() {
         <tbody>
           <tr>
             <td>Standard</td>
-            <td>ERC-721 token on the blockchain</td>
+            <td>XLS-20 token on the blockchain</td>
           </tr>
           <tr>
             <td>Chain</td>

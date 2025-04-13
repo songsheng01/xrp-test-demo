@@ -1,13 +1,17 @@
 .offerSection {
-  margin-top: 50px;
+  position: relative;
+  margin: 50px auto 20px auto;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #fff;
-  padding: 16px;
-  width: 90%; /* 居中显示，可结合 margin: 0 auto 使用 */
+  padding-top: 60px; /* 给 tab 留出空间 */
+  padding-right: 16px;
+  padding-bottom: 16px;
+  padding-left: 16px;
+  width: 90%;
   box-sizing: border-box;
-  margin: 50px auto 20px auto;
 }
+
 
 /* 顶栏：左右布局 */
 .topRow {
@@ -143,4 +147,37 @@
 
 .cancelButton:hover {
   background-color: #bbb;
+}
+
+/* ---------- Tab 样式 ---------- */
+
+/* Tab 容器，固定在盒子的最上端 */
+.tabContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+}
+
+/* 每个 tab 占据一半宽度 */
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  font-size: 16px;
+  color: #333;
+  border: none;
+  outline: none;
+}
+
+/* 激活状态的 tab */
+.activeTab {
+  background-color: #fff;
+  font-weight: bold;
+  border-bottom: 2px solid #fff;
 }

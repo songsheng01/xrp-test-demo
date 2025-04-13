@@ -39,6 +39,7 @@
     border-collapse: separate;
     border-spacing: 0 8px; /* 行间距，可根据需要调整 */
     margin-bottom: 16px;
+    color: #000;
   }
   
   .infoTable td {
@@ -70,3 +71,6 @@
     padding: 0;
   }
   
+  .title {
+    color: #000; /* 设定文字为黑色 */
+  }

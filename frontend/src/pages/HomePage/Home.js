@@ -1,20 +1,19 @@
 import React, { useContext } from "react";
-import { WalletContext } from "../context/WalletContext";
+import { WalletContext } from "../../context/WalletContext";
 import { useNavigate } from "react-router-dom"; // ✅ Import navigation hook
-import TokenCard from "../components/TokenCard";
-import sampleImage from "../assets/SV3pt5_EN_1.png";
-import sampleImage2 from "../assets/NBA.png";
-import sampleImage3 from "../assets/SV3pt5_EN_2.png";
-import sampleImage4 from "../assets/SV3pt5_EN_3.png";
-import sampleImage5 from "../assets/p1.png";
-import sampleImage6 from "../assets/p2.png";
-import sampleImage7 from "../assets/p3.png";
-import sampleImage8 from "../assets/p4.png";
-import sampleImage9 from "../assets/p5.png";
-import sampleImage10 from "../assets/p6.png";
+import TokenCard from "../../components/TokenCard/TokenCard";
+import sampleImage from "../../assets/SV3pt5_EN_1.png";
+import sampleImage2 from "../../assets/NBA.png";
+import sampleImage3 from "../../assets/SV3pt5_EN_2.png";
+import sampleImage4 from "../../assets/SV3pt5_EN_3.png";
+import sampleImage5 from "../../assets/p1.png";
+import sampleImage6 from "../../assets/p2.png";
+import sampleImage7 from "../../assets/p3.png";
+import sampleImage8 from "../../assets/p4.png";
+import sampleImage9 from "../../assets/p5.png";
+import sampleImage10 from "../../assets/p6.png";
 
-
-import "./Home.css";
+import "../HomePage/Home.css";
 
 const Home = () => {
   const { walletAddress, xrpBalance, connectWallet } = useContext(WalletContext);

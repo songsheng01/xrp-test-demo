@@ -1,15 +1,15 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { WalletContext } from "../context/WalletContext";
+import { WalletContext } from "../../context/WalletContext";
 import { isInstalled, signTransaction } from "@gemwallet/api"; // ✅ Import GemWallet API
 import axios from "axios";
 import "./Profile.css";
 import xrpl from "xrpl";
-import sampleImage1 from "../assets/h1.png";
-import sampleImage2 from "../assets/h2.png";
-import sampleImage3 from "../assets/h3.png";
+import sampleImage1 from "../../assets/h1.png";
+import sampleImage2 from "../../assets/h2.png";
+import sampleImage3 from "../../assets/h3.png";
 // import TokenCard from "../components/TokenCard"; // Added import for TokenCard
-import OwnTokenCard from "../components/OwnTokenCard";
+import OwnTokenCard from "../../components/OwnTokenCard/OwnTokenCard";
 
 const Profile = () => {
   const { walletAddress, xrpBalance } = useContext(WalletContext);

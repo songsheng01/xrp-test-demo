@@ -3,6 +3,7 @@ import styles from './tokenPage.module.css';
 import PurchaseBox from '../../components/ PurchaseBox/PurchaseBox';
 import DetailBox from '../../components/DetailBox/DetailBox';
 // import sampleImage from '../../assets/SV3pt5_EN_1.png';
+import OrderBoard from '../../components/Orderboard/Orderboard';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -137,6 +138,7 @@ function TokenPage() {
             </button>
           ))}
         </div>
+        <OrderBoard />
         <PurchaseBox />
         < DetailBox />
       </div>

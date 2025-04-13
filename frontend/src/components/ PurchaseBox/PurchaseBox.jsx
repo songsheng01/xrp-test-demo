@@ -11,6 +11,9 @@ function PurchaseBox() {
   // 表单数据状态
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState(0.00);
+  // 新增 state，用于控制当前选中的 tab，默认是 'buy'
+  const [activeTab, setActiveTab] = useState('buy');
+
   const { walletAddress, connectWallet } = useContext(WalletContext);
 
   const handleMakeOffer = () => {
@@ -21,15 +24,22 @@ function PurchaseBox() {
     setShowModal(false);
   };
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log( walletAddress);
+      console.log(walletAddress);
+      // 根据 activeTab 可以选择不同的接口或参数，这里作为示例直接用同一个接口
       const response = await axios.post('http://localhost:5001/api/sold', {
         token: "5445535400000000000000000000000000000000",
         quantity: quantity,
         maxPrice: price,
-        buyerAddr: walletAddress
+        buyerAddr: walletAddress,
+        // 将交易类型传递给后端
+        type: activeTab
       });
       console.log(response);
       alert('Offer submitted successfully!');
@@ -44,9 +54,25 @@ function PurchaseBox() {
 
   return (
     <div className={styles.offerSection}>
+      {/* 新增 Tab 选择区域 */}
+      <div className={styles.tabContainer}>
+        <button
+          className={`${styles.tab} ${activeTab === 'buy' ? styles.activeTab : ''}`}
+          onClick={() => handleTabClick('buy')}
+        >
+          Buy
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'sell' ? styles.activeTab : ''}`}
+          onClick={() => handleTabClick('sell')}
+        >
+          Sell
+        </button>
+      </div>
+
       <div className={styles.topRow}>
         <div className={styles.status}>
-          Lowest Price:  $8/share
+          {activeTab === 'buy' ? 'Highest Buy: $17/share' : 'Lowest Ask: $25/share'}
         </div>
         <button className={styles.offerButton} onClick={handleMakeOffer}>
           Make an offer
