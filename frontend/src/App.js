@@ -5,11 +5,12 @@ import Home from "./pages/HomePage/Home.js";
 import Profile from "./pages/ProfilePage/Profile.js";
 import TokenPage from "./pages/tokenPage/tokenPage.jsx";
 import OwnTokenCardPage from "./pages/OwenTokenCardPage/OwnTokenCardPage.js";
+import Marketplace from "./pages/MarketplacePage/Marketplace.jsx";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Marketplace />} />
       <Route path="/profile" element={<Profile />} /> {/* ✅ Add Profile route */}
       <Route path="/token" element={<TokenPage />} />
       <Route path="/ownTokenCardPage" element={<OwnTokenCardPage />} />

@@ -1,0 +1,21 @@
+.marquee {
+    display: flex;
+    width: 200%; /* Enough space for two content sets */
+    animation: scroll-left 10s linear infinite;
+  }
+  
+  .marqueeContent {
+    display: flex;
+    flex-shrink: 0;
+    width: 50%;
+    white-space: nowrap;
+  }
+  
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
