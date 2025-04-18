@@ -4,46 +4,39 @@ import * as xrpl from "xrpl";
 
 export const WalletContext = createContext();
 
+export async function fetchAvailableXrp(address) {
+  const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233")
+  await client.connect()
+
+  // 1) Get total XRP via built‑in helper (string, e.g. "100.000000")
+  const totalXrpStr = await client.getXrpBalance(address)
+  const totalXrp = Number(totalXrpStr)
+
+  // 2) Get account_info so we know how many ledger objects you have
+  const acctRes = await client.request({
+    command: "account_info",
+    account: address,
+    ledger_index: "validated",
+  })
+  const ownerCount = acctRes.result.account_data.OwnerCount
+
+  // 3) Get the current reserve requirements
+  const infoRes = await client.request({ command: "server_info" })
+  const validated = infoRes.result.info.validated_ledger
+  const reserveBaseXrp = Number(validated.reserve_base_xrp)
+  const reserveIncXrp = Number(validated.reserve_inc_xrp)
+
+  // 4) Compute available = total - (base + inc * ownerCount)
+  const reservedXrp = reserveBaseXrp + reserveIncXrp * ownerCount
+  const availableXrp = Math.max(totalXrp - reservedXrp, 0)
+
+  await client.disconnect()
+  return availableXrp.toString()
+}
+
 export const WalletProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [xrpBalance, setXrpBalance] = useState(null);
-
-  const fetchBalance = async (address) => {
-    // Connect to Testnet
-    const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233")
-    try {
-      await client.connect()
-      // Fetch balance (returns a string in XRP)
-      const balance = await client.getXrpBalance(address)
-      return balance
-    } catch (err) {
-      console.error("Failed to fetch XRP balance:", err)
-      throw err
-    } finally {
-      await client.disconnect()
-    }
-  }
-  
-  // const fetchBalance = async (address) => {
-  //   try {
-  //     const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
-  //     await client.connect();
-  
-  //     const response = await client.request({
-  //       command: "account_info",
-  //       account: address,
-  //       ledger_index: "validated",
-  //     });
-  
-  //     const balance = response.result?.account_data?.Balance;
-  //     setXrpBalance(balance ? xrpl.dropsToXrp(balance) : "0");
-  
-  //     await client.disconnect();
-  //   } catch (error) {
-  //     console.error("Failed to fetch XRP balance:", error);
-  //     setXrpBalance("Error");
-  //   }
-  // };
 
   const connectWallet = async () => {
     console.log("Connect Wallet function triggered");
@@ -56,7 +49,7 @@ export const WalletProvider = ({ children }) => {
         console.log("Wallet Address:", address);
         setWalletAddress(address);
         if (address) {
-          const balance = await fetchBalance(address);
+          const balance = await fetchAvailableXrp(address);
           setXrpBalance(balance);
         }
       } else {

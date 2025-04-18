@@ -108,11 +108,11 @@ export default function SideBar({ onMyHoldingsClick, currentPage }) {
           <>
             <div className="text-lg font-bold mb-1">
               <span className="text-gray-700">Account Value:</span>{" "}
-              <span className="text-pink-500">{Number(xrpBalance).toFixed(2)} XRP</span>
+              <span className="text-pink-500">{Number(xrpBalance).toFixed(4)} XRP</span>
             </div>
             <div className="text-lg font-bold">
               <span className="text-gray-700">XRP Balance:</span>{" "}
-              <span className="text-pink-500">{Number(xrpBalance).toFixed(2)} XRP</span>
+              <span className="text-pink-500">{Number(xrpBalance).toFixed(4)} XRP</span>
             </div>
           </>
         )}
