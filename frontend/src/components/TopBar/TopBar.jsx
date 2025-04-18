@@ -12,7 +12,7 @@ export default function TopBar() {
   };
 
   return (
-    <div className="w-full h-20 px-4 flex items-center gap-20 justify-between shadow-sm bg-white border-b border-gray-200 rounded-2xl">
+    <div className="w-full h-20 px-4 flex items-center gap-20 justify-between bg-white backdrop-blur-lg border-b border-white/40 shadow-md rounded-2xl">
       {/* Left: Wallet Button */}
       <div>
         {walletAddress ? (

@@ -1,4 +1,5 @@
 import React, { useContext } from "react"
+import { useNavigate } from "react-router-dom"
 import styles from "./SideBar.module.css";
 import { WalletContext } from "../../context/WalletContext";
 import clsx from "clsx"
@@ -14,13 +15,14 @@ import {
 } from "../tailwind_utils/sidebar"
 import { FaHome, FaStore, FaWallet, FaInfoCircle, FaSearch } from "react-icons/fa"
 
-export default function SideBar({ onMyHoldingsClick, currentPage }) {
+export default function SideBar({currentPage }) {
   const { walletAddress, xrpBalance, connectWallet } = useContext(WalletContext);
+  const navigate = useNavigate()
 
   const formatAddress = addr => addr.slice(0, 4) + "..." + addr.slice(-4)
 
   return (
-    <Sidebar className="w-80 self-stretch flex flex-col bg-white/90 backdrop-blur-lg border border-white/40 shadow-2xl  overflow-y-auto rounded-2xl !h-auto">
+    <Sidebar className="w-80 self-stretch flex flex-col bg-white/90 backdrop-blur-lg border-white/40 shadow-2xl overflow-y-auto rounded-2xl !h-auto">
       <SidebarBody className="flex-1 overflow-y-auto px-6 pt-6 space-y-6">
         {/* Upper nav section */}
         <div className="space-y-6">
@@ -29,7 +31,7 @@ export default function SideBar({ onMyHoldingsClick, currentPage }) {
             <input
               type="text"
               placeholder="Search"
-              className="w-full pl-12 pr-4 py-3 text-base rounded-xl border border-gray-300 ring-2 ring-pink-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full pl-12 pr-4 py-3 text-base rounded-xl ring-2 ring-pink-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
 
@@ -59,7 +61,13 @@ export default function SideBar({ onMyHoldingsClick, currentPage }) {
             </SidebarItem>
 
             <SidebarItem
-              onClick={walletAddress ? onMyHoldingsClick : connectWallet}
+              onClick={() => {
+                if (walletAddress) {
+                  navigate("/profile")
+                } else {
+                  connectWallet()
+                }
+              }}
               current={currentPage === "holdings"}
               className={clsx(
                 "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white/80 hover:shadow-xl transform hover:-translate-y-0.5 transition",
@@ -108,11 +116,11 @@ export default function SideBar({ onMyHoldingsClick, currentPage }) {
           <>
             <div className="text-lg font-bold mb-1">
               <span className="text-gray-700">Account Value:</span>{" "}
-              <span className="text-pink-500">{Number(xrpBalance).toFixed(4)} XRP</span>
+              <span className="text-pink-500">{Number(xrpBalance).toFixed(2)} XRP</span>
             </div>
             <div className="text-lg font-bold">
               <span className="text-gray-700">XRP Balance:</span>{" "}
-              <span className="text-pink-500">{Number(xrpBalance).toFixed(4)} XRP</span>
+              <span className="text-pink-500">{Number(xrpBalance).toFixed(2)} XRP</span>
             </div>
           </>
         )}
