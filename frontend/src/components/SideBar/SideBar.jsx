@@ -15,15 +15,21 @@ import {
 } from "../tailwind_utils/sidebar"
 import { FaHome, FaStore, FaWallet, FaInfoCircle, FaSearch } from "react-icons/fa"
 
-export default function SideBar({currentPage }) {
+export default function SideBar({ currentPage }) {
   const { walletAddress, xrpBalance, connectWallet } = useContext(WalletContext);
   const navigate = useNavigate()
 
   const formatAddress = addr => addr.slice(0, 4) + "..." + addr.slice(-4)
 
   return (
-    <Sidebar className="w-80 self-stretch flex flex-col bg-white/90 backdrop-blur-lg border-white/40 shadow-2xl overflow-y-auto rounded-2xl !h-auto">
-      <SidebarBody className="flex-1 overflow-y-auto px-6 pt-6 space-y-6">
+    <Sidebar className="w-80 flex-shrink-0 self-stretch flex flex-col h-full min-h-0 bg-white backdrop-blur-lg border-white/40 shadow-lg rounded-2xl">
+      {/* aurora gradient stripe */}
+      <span
+        className="absolute inset-y-0 left-0 w-3 rounded-l-2xl
+             bg-gradient-to-b from-violet-400 via-purple-500
+             via-pink-400 to-orange-400"
+      />
+      <SidebarBody className="flex-1 min-h-0 overflow-y-auto pl-10 pr-8 pt-6 space-y-6">
         {/* Upper nav section */}
         <div className="space-y-6">
           <div className="relative">
@@ -44,7 +50,7 @@ export default function SideBar({currentPage }) {
                 currentPage === "home" && "bg-gradient-to-r from-orange-50 to-pink-50"
               )}
             >
-              <FaHome data-slot="icon" className={clsx("w-7 h-7", currentPage === "home" ? "text-orange-500" : "text-pink-500")} />
+              <FaHome data-slot="icon" className={clsx("w-7 h-7 ", currentPage === "home" ? "text-orange-500" : "text-pink-500")} />
               <SidebarLabel className={clsx("text-xl font-bold", currentPage === "home" ? "text-orange-500" : "text-pink-500")}>Home</SidebarLabel>
             </SidebarItem>
 
@@ -61,13 +67,7 @@ export default function SideBar({currentPage }) {
             </SidebarItem>
 
             <SidebarItem
-              onClick={() => {
-                if (walletAddress) {
-                  navigate("/profile")
-                } else {
-                  connectWallet()
-                }
-              }}
+              onClick={() => { if (walletAddress) { navigate("/profile") } else { connectWallet() } }}
               current={currentPage === "holdings"}
               className={clsx(
                 "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white/80 hover:shadow-xl transform hover:-translate-y-0.5 transition",
@@ -93,7 +93,7 @@ export default function SideBar({currentPage }) {
         </div>
       </SidebarBody>
       {/* Bottom wallet/account info section */}
-      <SidebarFooter className="mt-auto border-t border-gray-200 px-6 py-10 bg-white">
+      <SidebarFooter className="mt-auto border-t border-gray-200 pl-8 py-10 rounded-b-2xl bg-transparent">
         <div className="flex items-center gap-4 mb-6">
           <img
             src="https://i.pravatar.cc/100"
@@ -104,10 +104,10 @@ export default function SideBar({currentPage }) {
           <div className="text-sm">
             {walletAddress ? (
               <div className="text-xl font-bold text-orange-500">
-                {formatAddress(walletAddress)}
+                Hi, {formatAddress(walletAddress)}
               </div>
             ) : (
-              <div className="text-gray-800">Please connect your wallet</div>
+              <div className="text-lg text-gray-700 font-semibold">Connect your wallet to get started</div>
             )}
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function SideBar({currentPage }) {
         )}
 
         <div className="mt-16 flex justify-center">
-          <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500">
+          <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff5e00] to-[#ff9600]">
             X-Card
           </span>
         </div>

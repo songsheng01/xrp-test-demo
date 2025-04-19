@@ -2,11 +2,11 @@ import React from "react"
 
 export default function TokenImage({ imageUrl, alt }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-md">
+    <div className="flex h-full w-full items-center justify-center pt-3">
       <img
         src={imageUrl}
         alt={alt}
-        className="w-full h-auto object-contain"
+        className="max-h-full max-w-full object-contain object-center"
       />
     </div>
   )

@@ -4,7 +4,7 @@ export default function TokenHeader({ title, grade, tokenId }) {
   return (
     <div>
       {/* Main title */}
-      <h1 className="mb-10 text-3xl font-bold text-gray-800">{title}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-800">{title}</h1>
 
       {/* PSA grade subtitle */}
       <h2 className="mt-4 text-xl font-bold text-gray-800">
@@ -12,7 +12,7 @@ export default function TokenHeader({ title, grade, tokenId }) {
       </h2>
 
       {/* Token ID line */}
-      <p className="mt-4 text-xl font-bold text-orange-500">
+      <p className="mt-2 text-xl font-bold text-orange-500">
         Token ID: {tokenId}
       </p>
     </div>
