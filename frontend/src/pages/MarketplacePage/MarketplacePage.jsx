@@ -17,19 +17,37 @@ import sampleImage10 from "../../assets/p6.png";
 
 export default function Marketplace() {
   const navigate = useNavigate()
+ 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-4 pt-1">
       <div className="mb-2">
         <TopBar />
       </div>
       {/* Page Content */}
-      <div className="flex flex-1 gap-4 min-h-0">
+      <div className="flex flex-1 gap-4 min-h-0 h-full">
         <SideBar currentPage="marketplace" />
-
+        
         {/* Main content (e.g. grid of cards) */}
-        <div className="flex-1 min-w-0 p-6">
+        
+        <div className="flex-1 p-6">
           {/* 🔹 Token Grid */}
+          {/* Sticky Search & Filter at Top */}
+        <div className="sticky top-0 bg-gray-100 p-4 z-10 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <input
+                type="text"
+                placeholder="Search tokens..."
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300"
+              />
+              <select className="w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                <option>Sort by Price</option>
+                <option>Sort by Trending</option>
+                <option>Sort by Volume</option>
+              </select>
+            </div>
+          </div>
         <div className="token-grid">
+          
           <TokenCard token={{ name: "Pokemon 1", price: 154.00, change: -3.21, image: sampleImage }} />
           <TokenCard token={{ name: "Victor Wembanyama", price: 146431.00, change: 10.6, image: sampleImage2 }} />
           <TokenCard token={{ name: "Pokemon 2", price: 14.5, change: -8.73, image: sampleImage3 }} />

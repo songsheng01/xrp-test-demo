@@ -41,7 +41,7 @@ export default function SideBar({ currentPage }) {
             />
           </div>
 
-          <SidebarSection className="space-y-6">
+          <SidebarSection className="space-y-5">
             <SidebarItem
               href="/home"
               current={currentPage === "home"}
