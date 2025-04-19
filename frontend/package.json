@@ -14,7 +14,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
-    "framer-motion": "^12.7.3",
+    "framer-motion": "^12.7.4",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.0.0",

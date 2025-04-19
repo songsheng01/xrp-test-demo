@@ -8,11 +8,13 @@ import OwnTokenCardPage from "./pages/OwenTokenCardPage/OwnTokenCardPage";
 import MarketplacePage from "./pages/MarketplacePage/MarketplacePage";
 import AboutPage from "./pages/AboutPage/About";
 import TradingPage from "./pages/TradingPage/TradingPage";
+import LandingPage from "./pages/LandingPage/LandingPage";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<MarketplacePage />} />
+      <Route path="/" element={<LandingPage />} />
+      {/* <Route path="/" element={<MarketplacePage />} /> */}
       <Route path="/marketplace" element={<MarketplacePage />} />
       <Route path="home" element={<Home />} />
       <Route path="/profile" element={<Profile />} />
