@@ -77,7 +77,7 @@ export default function OrderForm({ tokenId, currentPrice }) {
           {isMarket ? (
             <>
               <span className="text-md">Market Price:</span>
-              <span className="text-md font-semibold">
+              <span className="text-md font-semibold text-[#ff7700]">
                 {currentPrice.toFixed(4)} XRP
               </span>
             </>

@@ -40,14 +40,14 @@ export default function Marketplace() {
       <div className="flex flex-1 gap-4 min-h-0 h-full">
         <SideBar currentPage="marketplace" />
 
-        <div className="flex-1 p-6 flex flex-col min-h-0">
+        <div className="flex-1 p-0 flex flex-col min-h-0">
           {/* Sticky Search & Filter */}
           <div className="sticky top-0 bg-gray-100 p-4 z-10 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <input
                 type="text"
                 placeholder="Search tokens..."
-                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                className="flex-1 px-4 py-2 rounded-lg ring-2 ring-pink-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
               <select className="w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300">
                 <option>Sort by Price</option>
