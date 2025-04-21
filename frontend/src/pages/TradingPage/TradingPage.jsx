@@ -59,7 +59,7 @@ export default function TradingPage() {
           </div>
           <div className="mx-4 w-2 bg-gray-100 rounded-md" />
           {/* RIGHT COLUMN */}
-          <div className="flex-1 flex flex-col space-y-6 overflow-y-auto">
+          <div className="flex-1 flex flex-col space-y-4 overflow-y-auto">
             <TokenStats
               tokenId={tokenId}
               price={config.price}

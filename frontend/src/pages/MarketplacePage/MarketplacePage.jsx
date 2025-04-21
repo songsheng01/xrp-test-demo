@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/TopBar/TopBar";
 import SideBar from "../../components/SideBar/SideBar";
-import TokenCard from "../../components/TokenCard/TokenCard";
+import TokensGrid from "../../components/Marketplace/TokensGrid"
 
 import sampleImage from "../../assets/bulbasaur.png";
 import sampleImage2 from "../../assets/NBA.png";
@@ -40,32 +40,7 @@ export default function Marketplace() {
       <div className="flex flex-1 gap-4 min-h-0 h-full">
         <SideBar currentPage="marketplace" />
 
-        <div className="flex-1 p-0 flex flex-col min-h-0">
-          {/* Sticky Search & Filter */}
-          <div className="sticky top-0 bg-gray-100 p-4 z-10 border-b border-gray-200">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <input
-                type="text"
-                placeholder="Search tokens..."
-                className="flex-1 px-4 py-2 rounded-lg ring-2 ring-pink-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
-              <select className="w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300">
-                <option>Sort by Price</option>
-                <option>Sort by Trending</option>
-                <option>Sort by Volume</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Token Grid：5 列，20% 宽度，自适应滚动 */}
-          <div className="flex-1 overflow-auto mt-4">
-            <div className="grid grid-cols-5 gap-4">
-              {tokens.map((token) => (
-                <TokenCard key={token.name} token={token} />
-              ))}
-            </div>
-          </div>
-        </div>
+        <TokensGrid holdings={tokens} />
       </div>
     </div>
   );

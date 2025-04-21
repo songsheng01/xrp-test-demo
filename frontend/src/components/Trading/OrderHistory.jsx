@@ -12,7 +12,7 @@ export default function OrderHistory({ className = "" }) {
     >
       <h3 className="text-lg font-bold mb-2">Order History</h3>
       <table className="w-full text-md">
-        <thead className="sticky top-0">
+        <thead>
           <tr className="text-left border-b">
             <Th>Token</Th>
             <Th>Type</Th>

@@ -1,6 +1,5 @@
 import React, { useContext } from "react"
 import { useNavigate } from "react-router-dom"
-import styles from "./SideBar.module.css";
 import { WalletContext } from "../../context/WalletContext";
 import clsx from "clsx"
 import {
@@ -37,7 +36,7 @@ export default function SideBar({ currentPage }) {
             <input
               type="text"
               placeholder="Search"
-              className="w-full pl-12 pr-4 py-3 text-base rounded-xl ring-2 ring-pink-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full pl-12 pr-4 py-3 text-base rounded-xl ring-2 ring-purple-400 focus:outline-none hover:ring-orange-300 focus:ring-orange-400"
             />
           </div>
 
@@ -68,21 +67,21 @@ export default function SideBar({ currentPage }) {
 
             <SidebarItem
               onClick={() => { if (walletAddress) { navigate("/profile") } else { connectWallet() } }}
-              current={currentPage === "holdings"}
+              current={currentPage === "profile"}
               className={clsx(
                 "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:shadow-sm transition duration-200",
-                currentPage === "holdings" ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-pink-50"
+                currentPage === "profile" ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-pink-50"
               )}
             >
-              <FaWallet data-slot="icon" className={clsx("w-7 h-7", currentPage === "holdings" ? "text-orange-500" : "text-pink-500")} />
-              <SidebarLabel className={clsx("text-xl font-bold", currentPage === "holdings" ? "text-orange-500" : "text-neutral-700")}>My Holdings</SidebarLabel>
+              <FaWallet data-slot="icon" className={clsx("w-7 h-7", currentPage === "profile" ? "text-orange-500" : "text-pink-500")} />
+              <SidebarLabel className={clsx("text-xl font-bold", currentPage === "profile" ? "text-orange-500" : "text-neutral-700")}>My Profile</SidebarLabel>
             </SidebarItem>
 
             <SidebarItem
               href="/about"
               current={currentPage === "about"}
               className={clsx(
-                "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-rose-50 hover:shadow-sm transition duration-200",
+                "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:shadow-sm transition duration-200",
                 currentPage === "about" ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-rose-50"
               )}
             >
@@ -101,7 +100,7 @@ export default function SideBar({ currentPage }) {
             className="w-20 h-20 rounded-full border border-neutral-300 object-cover"
             onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png" }}
           />
-          <div className="text-sm">
+          <div className="text-sm ml-2">
             {walletAddress ? (
               <div className="text-xl font-bold text-orange-500">
                 Hi, {formatAddress(walletAddress)}

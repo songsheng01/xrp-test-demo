@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 const TokenCard = ({ token }) => {
   const navigate = useNavigate();
-  const handleClick = () => navigate("/token", { state: { token } });
+  const handleClick = () => navigate(`/trade/${token.name}`, { state: { token } });
 
   return (
     <div
       onClick={handleClick}
       className="
         w-full
-        bg-white rounded-2xl shadow-md p-4
+        bg-white rounded-2xl shadow-md border-2 border-white p-4
         flex flex-col items-center
-        cursor-pointer hover:shadow-xl transition-shadow duration-200
+        cursor-pointer hover:border-orange-400 transition duration-100
       "
     >
       {/* adaptive 4:3 rectangle image */}
@@ -24,16 +24,20 @@ const TokenCard = ({ token }) => {
         />
       </div>
 
-      {/* token info */}
-      <h3 className="text-lg font-semibold text-gray-800 truncate">
+      {/* token card info */}
+      <h3 className="text-lg font-semibold text-neutral-800 truncate">
         {token.name}
       </h3>
-      <p className="mt-1 text-gray-700 font-medium">
-        ${token.price.toFixed(2)}
+      <p
+        className={`mt-2 text-lg font-semibold ${
+          token.change >= 0 ? "text-[#00a300]" : "text-red-500"
+        }`}
+      >
+        {token.price.toFixed(2)} XRP
       </p>
       <p
-        className={`mt-1 text-sm font-medium ${
-          token.change >= 0 ? "text-green-500" : "text-red-500"
+        className={`text-ms font-medium ${
+          token.change >= 0 ? "text-[#00a300]" : "text-red-500"
         }`}
       >
         {token.change >= 0 ? `+${token.change.toFixed(2)}` : token.change.toFixed(2)}%
