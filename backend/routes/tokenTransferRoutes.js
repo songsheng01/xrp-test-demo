@@ -1,20 +1,12 @@
 import express from "express";
 import { sendTokens } from "../controllers/tokenTransferController.js";
 import { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll,searchByType } from "../models/dbOperation.js";
-import { uploadSellOrder, buyProduct } from "../models/orderOperation.js";
-import { sendXRP } from "../controllers/xrpTransferController.js";
-import { checkOrPromptTrustLine } from "../controllers/trustController.js";
 import xrpl from 'xrpl';
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const router = express.Router();
-
-// function generateCurrencyHex(num) {
-//   const currencyCode = num.toString(); // Convert number to string
-//   return xrpl.convertStringToHex(currencyCode).padEnd(40, "0"); // Convert to hex & pad
-// }
 
 function generateCurrencyHex(currencyCode) {
   return xrpl.convertStringToHex(currencyCode).padEnd(40, "0").toUpperCase();
@@ -30,48 +22,17 @@ router.post("/create", async (req, res) => {
   const terms = await searchByType(type);
   let result;
   if(terms.length == 0){
-    const token = generateCurrencyHex("TEST");
+    const token = generateCurrencyHex("TESTHPS");
     console.log(token);
     await createNewNft(token,type,"https://test.com",pcs,-1);
     result = await sendTokens(recipient, token, "1000");
   } else {
-    const token = generateCurrencyHex("TEST");
+    const token = generateCurrencyHex("TESTHPS");
     console.log(token);
-    await addExisitsNft(terms[0].nft_token,pcs);
+    // await addExisitsNft(terms[0].nft_token,pcs);
     result = await sendTokens(recipient, terms[0].nft_token, "1000");
   }
   res.json(result);
-});
-
-router.post("/list", async (req,res)=>{
-  const {token,price,quantity,usr_addr} =  req.body;
-  try{
-    await uploadSellOrder(token,price,quantity,usr_addr);
-    res.status(200).json({"success":true});
-  }catch(error){
-    console.error("Error uploading sold order:", error);
-    throw error;
-  }
-});
-
-router.post("/sold",async (req,res) => {
-  const {token,quantity,maxPrice,buyerAddr} = req.body;
-  let total_XPR = 0;
-  try {
-    const { purchasedOrders, remaining, lowestRemainingPrice } = await buyProduct(token,quantity,maxPrice);
-    for(let i = 0; i < purchasedOrders.length; i++){
-      const order = purchasedOrders[i];
-      total_XPR += order.price * order.quantityBought;
-      await sendXRP(process.env.WALLET_ADDRESS,order.sellerAddr,order.price * order.quantityBought);
-    }
-    const response = await sendXRP(buyerAddr,process.env.WALLET_ADDRESS,total_XPR);
-    console.log(response);
-    await updatePrice(token,lowestRemainingPrice);
-    res.status(200).json({remain:remaining});
-  }catch(error){
-    console.error("Error uploading sold order:", error);
-    throw error;
-  }
 });
 
 router.post("/burn",async (req,res) => {

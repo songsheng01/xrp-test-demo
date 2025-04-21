@@ -14,7 +14,7 @@ function PurchaseBox() {
   // 新增 state，用于控制当前选中的 tab，默认是 'buy'
   const [activeTab, setActiveTab] = useState('buy');
 
-  const { walletAddress, connectWallet } = useContext(WalletContext);
+  const { walletAddress, connectWallet,signAndSubmit,ensureTrustLine } = useContext(WalletContext);
 
   const handleMakeOffer = () => {
     setShowModal(true);
@@ -31,18 +31,40 @@ function PurchaseBox() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log(walletAddress);
-      // 根据 activeTab 可以选择不同的接口或参数，这里作为示例直接用同一个接口
-      const response = await axios.post('http://localhost:5001/api/sold', {
-        token: "5445535400000000000000000000000000000000",
-        quantity: quantity,
-        maxPrice: price,
-        buyerAddr: walletAddress,
-        // 将交易类型传递给后端
-        type: activeTab
+      const buy_or_sell = activeTab === 'buy'? "buy":"sell";
+      let response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+        userAddress:walletAddress,
+        currency:"TESTHPS",
+        tokenAmount:quantity,
+        xrpAmount:price
       });
-      console.log(response);
-      alert('Offer submitted successfully!');
+      if (response.data.response.needsTrust === true) {
+        const { trustTransaction } = response.data.response;
+        const trustRes = await ensureTrustLine({ trustTransaction });
+        console.log(trustRes);
+        if (trustRes.success !== true) {
+          console.log(trustRes);
+          throw new Error(`TrustSet 失败：${trustRes.error}`);
+        }else{
+          response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+            userAddress: walletAddress,
+            currency: "TESTHPS",
+            tokenAmount: quantity,
+            xrpAmount: price,
+          });
+        }
+      }
+      const offerTransaction = response.data.response.offerTransaction;
+      const res = await signAndSubmit(offerTransaction);
+      if (res.success){
+        console.log('TxHash:', res.txHash);
+        response = await axios.post(`http://localhost:5001/api/transaction`, {
+          TxHash:res.txHash
+        });
+        console.log(response);
+      }else {
+        console.log(res.error);
+      }
     } catch (error) {
       console.error('Error submitting offer:', error);
       alert('There was an error submitting your offer.');

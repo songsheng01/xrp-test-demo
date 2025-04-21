@@ -4,8 +4,7 @@ import trustRoutes from "./routes/trustRoutes.js";
 import tokenTransferRoutes from "./routes/tokenTransferRoutes.js";
 import xrpTransferRoutes from "./routes/xrpTransferRoutes.js";
 import issuerRoutes from "./routes/issuerRoutes.js";
-import { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll } from "./models/dbOperation.js"
-import { uploadSellOrder, buyProduct } from "./models/orderOperation.js"
+import testRouter from "./routes/testRoutes.js";
 import dotenv from "dotenv";
 
 // Load environment variables
@@ -23,6 +22,7 @@ app.use("/api", trustRoutes);
 app.use("/api", tokenTransferRoutes);
 app.use("/api", xrpTransferRoutes);
 app.use("/api", issuerRoutes);
+app.use("/api", testRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

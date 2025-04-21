@@ -123,8 +123,6 @@ function TokenPage() {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        {/* 灰色框：显示当前价格与购买按钮左右布局 */}
-        {/* 时间区间选择按钮 */}
         <div className={styles.rangeButtonContainer}>
           {ranges.map((rangeOption) => (
             <button
