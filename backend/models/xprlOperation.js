@@ -123,71 +123,112 @@ export const prepareSellOffer = async (userAddress, currency, tokenAmount, xrpAm
 export async function fetchTransaction(txHash) {
   const client = new xrpl.Client(process.env.XRPL_ENDPOINT);
   await client.connect();
+
   try {
-    const { result } = await client.request({
+    // 1. 获取交易详情
+    const { result: tx } = await client.request({
       command:     'tx',
       transaction: txHash,
       binary:      false
     });
-    const tx = result;
 
+    // 2. 检查交易是否成功
     if (tx.meta.TransactionResult !== 'tesSUCCESS') {
       return { success: false, error: tx.meta.TransactionResult };
     }
 
-    const matched = tx.meta.AffectedNodes.some(node =>
-      node.DeletedNode?.LedgerEntryType === 'Offer'
+    // 3. 收集所有被删除或修改的挂单节点
+    const offerNodes = tx.meta.AffectedNodes.filter(node =>
+      node.DeletedNode?.LedgerEntryType === 'Offer' ||
+      node.ModifiedNode?.LedgerEntryType === 'Offer'
     );
-    if (!matched) {
-      return { success: false, error: 'No matching offer was consumed' };
+    if (offerNodes.length === 0) {
+      return { success: false, error: 'No offers affected in this transaction' };
     }
 
-    const time = tx.close_time_iso;
-    const id = tx.hash;
-
-    const { TakerPays, TakerGets } = tx.tx_json;
-    let currency, amount, price;
-
-    if (typeof TakerPays === 'object') {
-      const codeHex = TakerPays.currency;
-      currency = codeHex.length === 3
-        ? codeHex
-        : xrpl.convertHexToString(codeHex).replace(/\0+$/, '');
-      amount = parseFloat(TakerPays.value);
-      const xrpGot = parseInt(TakerGets, 10) / 1_000_000;
-      price  = xrpGot / amount;
-    } else {
-      const codeHex = TakerGets.currency;
-      currency = codeHex.length === 3
-        ? codeHex
-        : xrpl.convertHexToString(codeHex).replace(/\0+$/, '');
-      amount = parseFloat(TakerGets.value);
-      const xrpPaid = parseInt(TakerPays, 10) / 1_000_000;
-      price  = xrpPaid / amount;
-    }
-
+    const fills = [];
     const initiator = tx.tx_json.Account;
-    let buyer, seller;
-    // Find the counterparty from a deleted offer node
-    const deletedOfferNode = tx.meta.AffectedNodes.find(node => node.DeletedNode?.LedgerEntryType === 'Offer');
-    const counterAcct = deletedOfferNode.DeletedNode.PreviousFields.Account;
-    if (typeof TakerPays === 'object') {
-      // Initiator sold tokens -> initiator is seller, counterparty is buyer
-      seller = initiator;
-      buyer  = counterAcct;
-    } else {
-      // Initiator bought tokens -> initiator is buyer, counterparty is seller
-      buyer  = initiator;
-      seller = counterAcct;
+    const { TakerPays, TakerGets } = tx.tx_json;
+
+    // Helper: parse drops (XRP) or token values
+    const parsePays = (f) => f ? (typeof f === 'object' ? parseInt(f.value, 10) : parseInt(f, 10)) : 0;
+    const parseGets = (f) => f ? (typeof f === 'object' ? parseFloat(f.value) : parseFloat(f)) : 0;
+
+    // 4. 遍历节点，计算成交信息
+    for (const node of offerNodes) {
+      const isDeleted = !!node.DeletedNode;
+      const entry     = isDeleted ? node.DeletedNode : node.ModifiedNode;
+      const prev      = entry.PreviousFields || {};
+      const fin       = entry.FinalFields    || {};
+
+      // 4.1 计算差值
+      const prevPaysVal = parsePays(prev.TakerPays ?? prev.TakerGets);
+      const finPaysVal  = parsePays(fin.TakerPays  ?? fin.TakerGets);
+      const prevGetsVal = parseGets(prev.TakerGets  ?? prev.TakerPays);
+      const finGetsVal  = parseGets(fin.TakerGets   ?? fin.TakerPays);
+
+      const xrpDelta   = prevPaysVal - finPaysVal;     // drops
+      const tokenDelta = prevGetsVal - finGetsVal;     // token units
+
+      // 跳过无成交
+      if (tokenDelta <= 0) continue;
+
+      // 4.2 解析代币种类
+      let currency;
+      if (typeof TakerPays === 'object') {
+        const hex = TakerPays.currency;
+        currency = hex.length === 3
+          ? hex
+          : xrpl.convertHexToString(hex).replace(/\0+$/, '');
+      } else {
+        const hex = TakerGets.currency;
+        currency = hex.length === 3
+          ? hex
+          : xrpl.convertHexToString(hex).replace(/\0+$/, '');
+      }
+
+      // 4.3 计算数值
+      const xrpAmount = xrpDelta / 1_000_000;           // 买方支付的 XRP 数量
+      const tokenAmount = tokenDelta;                   // 卖方支付的代币数量
+      const tokenValueInXRP = xrpAmount / tokenAmount;  // 每个代币价值多少 XRP
+
+      // 4.4 确定买卖双方：买家支付 XRP，卖家支付代币
+      const owner = entry.FinalFields.Account;
+      let buyer, seller;
+      if (typeof TakerPays === 'object') {
+        // 发起方卖代币，owner 是买家
+        seller = initiator;
+        buyer  = owner;
+      } else {
+        // 发起方买代币，owner 是卖家
+        buyer  = initiator;
+        seller = owner;
+      }
+
+      fills.push({
+        currency,         // 代币种类
+        tokenAmount,      // 卖方付出的代币数量
+        xrpAmount,        // 买方付出的 XRP 数量
+        tokenValueInXRP,  // 每个代币价值多少 XRP
+        buyer,
+        seller
+      });
     }
 
-    return { success: true, id, time, currency, amount, price,buyer, seller  };
-  } catch (err) {
-    return { success: false, error: err.message };
+    return {
+      success: true,
+      id:      tx.hash,
+      time:    tx.close_time_iso,
+      fills
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
   } finally {
     await client.disconnect();
   }
 }
+
+
 
 /**
  * @param {string} currencyCode  货币代码，如 "XRP"、"USD" 或 "TEST"
