@@ -44,16 +44,16 @@ export default function TokenStats({
 
         {/* ─── Column 2 ─────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 gap-y-1 text-sm">
-          <span className="font-semibold">Supply</span>
-          <span className="text-right">{supply?.toLocaleString()}</span>
+          <span className="text-neutral-500">Supply</span>
+          <span className="text-right font-semibold">{supply?.toLocaleString()}</span>
 
-          <span className="font-semibold">Market Cap</span>
-          <span className="text-right">
+          <span className="text-neutral-500">Market Cap</span>
+          <span className="text-right font-semibold">
             {fmt.format(marketCap)} {baseSymbol}
           </span>
 
-          <span className="font-semibold">24h Volume</span>
-          <span className="text-right">{volume24h?.toLocaleString()}</span>
+          <span className="text-neutral-500">24h Volume</span>
+          <span className="text-right font-semibold">{volume24h?.toLocaleString()}</span>
         </div>
       </div>
     </div>
