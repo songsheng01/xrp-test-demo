@@ -4,9 +4,11 @@ import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
-async function uploadSellOrder(order_id,productId, price, quantity, time,buyer,seller) {
+async function uploadSellOrder(txn_id,productId, price, quantity, time,buyer,seller) {
+  const order_id = `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
   const order = {
     order_id,
+    txn_id,
     productId,
     price,
     quantity,

@@ -125,101 +125,113 @@ export async function fetchTransaction(txHash) {
   await client.connect();
 
   try {
-    // 1. 获取交易详情
     const { result: tx } = await client.request({
       command:     'tx',
       transaction: txHash,
       binary:      false
     });
 
-    // 2. 检查交易是否成功
     if (tx.meta.TransactionResult !== 'tesSUCCESS') {
       return { success: false, error: tx.meta.TransactionResult };
     }
 
-    // 3. 收集所有被删除或修改的挂单节点
     const offerNodes = tx.meta.AffectedNodes.filter(node =>
       node.DeletedNode?.LedgerEntryType === 'Offer' ||
       node.ModifiedNode?.LedgerEntryType === 'Offer'
     );
-    if (offerNodes.length === 0) {
+    if (!offerNodes.length) {
       return { success: false, error: 'No offers affected in this transaction' };
     }
 
     const fills = [];
     const initiator = tx.tx_json.Account;
-    const { TakerPays, TakerGets } = tx.tx_json;
 
-    // Helper: parse drops (XRP) or token values
-    const parsePays = (f) => f ? (typeof f === 'object' ? parseInt(f.value, 10) : parseInt(f, 10)) : 0;
-    const parseGets = (f) => f ? (typeof f === 'object' ? parseFloat(f.value) : parseFloat(f)) : 0;
-
-    // 4. 遍历节点，计算成交信息
     for (const node of offerNodes) {
-      const isDeleted = !!node.DeletedNode;
-      const entry     = isDeleted ? node.DeletedNode : node.ModifiedNode;
-      const prev      = entry.PreviousFields || {};
-      const fin       = entry.FinalFields    || {};
+      const entry = node.DeletedNode || node.ModifiedNode;
+      const prev  = entry.PreviousFields || {};
+      const fin   = entry.FinalFields    || {};
 
-      // 4.1 计算差值
-      const prevPaysVal = parsePays(prev.TakerPays ?? prev.TakerGets);
-      const finPaysVal  = parsePays(fin.TakerPays  ?? fin.TakerGets);
-      const prevGetsVal = parseGets(prev.TakerGets  ?? prev.TakerPays);
-      const finGetsVal  = parseGets(fin.TakerGets   ?? fin.TakerPays);
+      // 安全地解析出成交前后的 XRP drops 与 token 数量
+      let prevXrp = 0, finXrp = 0, prevToken = 0, finToken = 0;
 
-      const xrpDelta   = prevPaysVal - finPaysVal;     // drops
-      const tokenDelta = prevGetsVal - finGetsVal;     // token units
+      if (prev.TakerPays !== undefined) {
+        if (typeof prev.TakerPays === 'string') {
+          prevXrp = parseInt(prev.TakerPays, 10);
+        } else if (prev.TakerPays.value !== undefined) {
+          prevToken = parseFloat(prev.TakerPays.value);
+        }
+      }
+      if (prev.TakerGets !== undefined) {
+        if (typeof prev.TakerGets === 'string') {
+          prevXrp = parseInt(prev.TakerGets, 10);
+        } else if (prev.TakerGets.value !== undefined) {
+          prevToken = parseFloat(prev.TakerGets.value);
+        }
+      }
 
-      // 跳过无成交
+      if (fin.TakerPays !== undefined) {
+        if (typeof fin.TakerPays === 'string') {
+          finXrp = parseInt(fin.TakerPays, 10);
+        } else if (fin.TakerPays.value !== undefined) {
+          finToken = parseFloat(fin.TakerPays.value);
+        }
+      }
+      if (fin.TakerGets !== undefined) {
+        if (typeof fin.TakerGets === 'string') {
+          finXrp = parseInt(fin.TakerGets, 10);
+        } else if (fin.TakerGets.value !== undefined) {
+          finToken = parseFloat(fin.TakerGets.value);
+        }
+      }
+
+      const xrpDeltaDrops = prevXrp - finXrp;
+      const tokenDelta    = prevToken - finToken;
       if (tokenDelta <= 0) continue;
 
-      // 4.2 解析代币种类
-      let currency;
-      if (typeof TakerPays === 'object') {
-        const hex = TakerPays.currency;
-        currency = hex.length === 3
-          ? hex
-          : xrpl.convertHexToString(hex).replace(/\0+$/, '');
-      } else {
-        const hex = TakerGets.currency;
-        currency = hex.length === 3
-          ? hex
-          : xrpl.convertHexToString(hex).replace(/\0+$/, '');
-      }
+      // 解析代币代码（hex → ASCII）
+      const { TakerPays, TakerGets } = tx.tx_json;
+      const hex = typeof TakerPays === 'object'
+        ? TakerPays.currency
+        : TakerGets.currency;
+      const currency = hex.length === 3
+        ? hex
+        : xrpl.convertHexToString(hex).replace(/\0+$/, '');
 
-      // 4.3 计算数值
-      const xrpAmount = xrpDelta / 1_000_000;           // 买方支付的 XRP 数量
-      const tokenAmount = tokenDelta;                   // 卖方支付的代币数量
-      const tokenValueInXRP = xrpAmount / tokenAmount;  // 每个代币价值多少 XRP
+      const xrpAmount   = xrpDeltaDrops / 1_000_000;
+      const tokenAmount = tokenDelta;
+      const unitPrice   = xrpAmount / tokenAmount;
 
-      // 4.4 确定买卖双方：买家支付 XRP，卖家支付代币
-      const owner = entry.FinalFields.Account;
+      // 确定买卖双方
+      const maker = entry.FinalFields?.Account || entry.PreviousFields?.Account;
       let buyer, seller;
-      if (typeof TakerPays === 'object') {
-        // 发起方卖代币，owner 是买家
+      if (typeof tx.tx_json.TakerPays === 'object') {
+        // taker 支付了代币 → taker 是卖家
         seller = initiator;
-        buyer  = owner;
+        buyer  = maker;
       } else {
-        // 发起方买代币，owner 是卖家
+        // taker 支付了 XRP → taker 是买家
         buyer  = initiator;
-        seller = owner;
+        seller = maker;
       }
 
-      fills.push({
-        currency,         // 代币种类
-        tokenAmount,      // 卖方付出的代币数量
-        xrpAmount,        // 买方付出的 XRP 数量
-        tokenValueInXRP,  // 每个代币价值多少 XRP
-        buyer,
-        seller
-      });
+      fills.push({ currency, tokenAmount, xrpAmount, unitPrice, buyer, seller });
     }
+
+    // 汇总每种代币的单价
+    const pricePerCurrency = {};
+    fills.forEach(f => {
+      pricePerCurrency[f.currency] = f.unitPrice;
+    });
 
     return {
       success: true,
       id:      tx.hash,
       time:    tx.close_time_iso,
-      fills
+      fills,
+      summary: {
+        currenciesTraded: Object.keys(pricePerCurrency).length,
+        pricePerCurrency
+      }
     };
   } catch (error) {
     return { success: false, error: error.message };

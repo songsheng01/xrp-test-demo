@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './tokenPage.module.css';
 import PurchaseBox from '../../components/PurchaseBox/PurchaseBox';
 import DetailBox from '../../components/DetailBox/DetailBox';
-// import sampleImage from '../../assets/SV3pt5_EN_1.png';
+import sampleImage from '../../assets/h1.png';
 import OrderBoard from '../../components/Orderboard/Orderboard';
 import { useLocation } from 'react-router-dom';
 
@@ -102,7 +102,7 @@ function TokenPage() {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <img src={token.image} alt="test" className={styles.leftImg} />
+        <img src={sampleImage} alt="test" className={styles.leftImg} />
       </div>
       <div className={styles.right}>
         <h1>

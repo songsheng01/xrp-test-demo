@@ -41,9 +41,9 @@ testRouter.post('/transaction', async (req ,res) =>{
         const {TxHash} = req.body;
         const cur_tx = await fetchTransaction(TxHash);
         if(cur_tx.success === true){
-            // for(f in cur_tx.fills){
-            //     await uploadSellOrder(cur_tx.id,cur_tx.currency,cur_tx.price,cur_tx.amount,cur_tx.time,cur_tx.buyer,cur_tx.seller);
-            // }
+            for(const f of cur_tx.fills){
+                await uploadSellOrder(cur_tx.id,f.currency,f.xrpAmount/f.tokenAmount,f.tokenAmount,cur_tx.time,f.buyer,f.seller);
+            }
         }
         res.status(200).json({ success: true,currentTransacton: cur_tx});
     }catch(error){
