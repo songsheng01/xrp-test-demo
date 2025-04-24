@@ -25,7 +25,7 @@ export default function RedeemPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-4 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-2 pt-1">
       {/* Top bar */}
       <div className="mb-2">
         <TopBar />
@@ -36,7 +36,7 @@ export default function RedeemPage() {
         {/* Sidebar */}
         <SideBar currentPage="trading" />
         {/* Main content area */}
-        <div className="flex-1 flex flex-row h-full min-h-0 overflow-hidden p-6 bg-white rounded-2xl shadow-lg">
+        <div className="flex-1 flex flex-row h-full min-h-0 overflow-auto p-6 bg-white rounded-2xl shadow-lg">
           {/* ← LEFT PANEL (40% width) */}
           <div className="w-2/5 flex flex-col p-2 h-full min-h-0">
             {/* Token header */}
@@ -55,7 +55,14 @@ export default function RedeemPage() {
           </div>
           <div className="mx-4 w-2 bg-gray-100 rounded-md" />
           {/* RIGHT COLUMN */}
-          <div className="flex-1 flex flex-col space-y-4 overflow-y-auto">
+          <div className="flex-1 flex flex-col space-y-5 overflow-auto no-scrollbar">
+            <RedeemForm
+              tokenId={tokenId}
+              tokenSymbol={config.tokenId}
+              balance={2500}                // TODO replace with real balance
+              onSubmit={data => console.log("redeem request", data)}
+            />
+
           </div>
         </div>
       </div>
