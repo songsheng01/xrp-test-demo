@@ -12,7 +12,7 @@ import {
   SidebarDivider,
   SidebarLabel
 } from "../tailwind_utils/sidebar"
-import { FaHome, FaStore, FaWallet, FaInfoCircle, FaSearch } from "react-icons/fa"
+import { FaHome, FaShoppingCart, FaWallet, FaInfoCircle, FaSearch } from "react-icons/fa"
 
 export default function SideBar({ currentPage }) {
   const { walletAddress, xrpBalance, connectWallet } = useContext(WalletContext);
@@ -61,7 +61,7 @@ export default function SideBar({ currentPage }) {
                 currentPage === "marketplace" ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-fuchsia-50"
               )}
             >
-              <FaStore data-slot="icon" className={clsx("w-7 h-7", currentPage === "marketplace" ? "text-orange-500" : "text-fuchsia-500")} />
+              <FaShoppingCart data-slot="icon" className={clsx("w-7 h-7", currentPage === "marketplace" ? "text-orange-500" : "text-fuchsia-500")} />
               <SidebarLabel className={clsx("text-xl font-bold", currentPage === "marketplace" ? "text-orange-500" : "text-neutral-700")}>Marketplace</SidebarLabel>
             </SidebarItem>
 

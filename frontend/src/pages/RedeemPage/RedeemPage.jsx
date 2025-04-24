@@ -1,19 +1,15 @@
 // src/pages/TradingPage.jsx
 import React from "react"
 import { useParams } from "react-router-dom"
-import TokenHeader from "../../components/Trading/TokenHeader"
-import TokenImage from "../../components/Trading/TokenImage"
-import TokenStats from "../../components/Trading/TokenStats"
-import PriceChart from "../../components/Trading/PriceChart"
-import OrderBook from "../../components/Trading/OrderBook"
-import OrderForm from "../../components/Trading/OrderForm"
-import OrderHistory from "../../components/Trading/OrderHistory"
 import TopBar from "../../components/TopBar/TopBar"
 import SideBar from "../../components/SideBar/SideBar"
+import RedeemTokenHeader from "../../components/Redeem/RedeemTokenHeader"
+import RedeemTokenImage from "../../components/Redeem/RedeemTokenImage"
+import RedeemForm from "../../components/Redeem/RedeemForm"
 
 import bulbasaurImage from "../../assets/p1.png";
 
-export default function TradingPage() {
+export default function RedeemPage() {
   const { tokenId } = useParams()
   const config = {
     tokenId: tokenId,
@@ -29,7 +25,7 @@ export default function TradingPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-2 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-4 pt-1">
       {/* Top bar */}
       <div className="mb-2">
         <TopBar />
@@ -44,14 +40,14 @@ export default function TradingPage() {
           {/* ← LEFT PANEL (40% width) */}
           <div className="w-2/5 flex flex-col p-2 h-full min-h-0">
             {/* Token header */}
-            <TokenHeader
+            <RedeemTokenHeader
               title={config.title}
               grade={config.grade}
               tokenId={tokenId}
             />
             {/* Main image fills rest */}
             <div className="flex-1 min-h-0 flex pt-7">
-              <TokenImage
+              <RedeemTokenImage
                 imageUrl={config.imageUrl}
                 alt={`${config.title} art`}
               />
@@ -60,24 +56,6 @@ export default function TradingPage() {
           <div className="mx-4 w-2 bg-gray-100 rounded-md" />
           {/* RIGHT COLUMN */}
           <div className="flex-1 flex flex-col space-y-4 overflow-y-auto">
-            <TokenStats
-              tokenId={tokenId}
-              price={config.price}
-              usdPrice={config.usdPrice}
-              change24h={config.change24h}
-              marketCap={config.marketCap}
-              supply={config.supply}
-              volume24h={config.volume24h}
-            />
-
-            <div className="flex gap-4 flex-[0_0_40%] min-h-0">
-              <PriceChart tokenId={tokenId} className="flex-1 h-full min-h-0" />
-              <OrderBook tokenId={tokenId} className="w-1/5 h-full" />
-            </div>
-
-            <OrderForm tokenId={tokenId} currentPrice={10.89} />
-            
-            <OrderHistory tokenId={tokenId} />
           </div>
         </div>
       </div>

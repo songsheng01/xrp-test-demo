@@ -5,6 +5,8 @@ import ListingTable from "../../components/Listing/ListingTable"
 import ListingForm from "../../components/Listing/ListingForm"
 import { WalletContext } from "../../context/WalletContext"
 
+import { IoIosPricetags } from "react-icons/io";
+
 export default function ListingPage() {
   const { walletAddress } = useContext(WalletContext)
   const [tab, setTab] = useState("history")      // "history" | "form"
@@ -67,7 +69,7 @@ export default function ListingPage() {
   const handleClaim = id => alert(`Claiming request ${id}`)
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800 px-4 pb-4 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800 px-4 pb-2 pt-1">
       <div className="mb-2">
         <TopBar />
       </div>
@@ -78,8 +80,10 @@ export default function ListingPage() {
         {/* actual content */}
         <div className="flex-1 flex flex-col min-h-0 space-y-6">
           {/* page header */}
-          <h1 className="text-3xl font-extrabold text-gray-800 px-2 pt-6 pb-1">Card Listing</h1>
-
+          <div className="flex items-center px-2 pt-6 pb-2">
+            <IoIosPricetags data-slot="icon" className="w-8 h-8 text-orange-500" />
+            <h1 className="text-3xl font-bold px-3">Card Listing</h1>
+          </div>
           {/* tab buttons */}
           <div className="flex gap-4">
             <TabButton active={tab === "history"} onClick={() => setTab("history")}>
@@ -91,7 +95,7 @@ export default function ListingPage() {
           </div>
 
           {/* bodies */}
-          <div className="flex-1 min-h-0 overflow-auto">
+          <div className="flex-1 min-h-0 overflow-auto no-scrollbar">
             {tab === "form" ? (
               <ListingForm onSubmit={handleSubmit} wallet={walletAddress} />
             ) : (
@@ -108,10 +112,10 @@ const TabButton = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
     className={`
-      ml-2 px-6 py-2 text-xl font-semibold border-b-4 rounded-sm
+      ml-2 px-8 py-2 text-lg font-semibold border-2 rounded-xl
       ${active
-        ? "border-b-orange-500 text-orange-500"
-        : "text-neutral-800 hover:border-b-orange-400 hover:text-orange-400"}
+        ? "border-orange-500 text-orange-500"
+        : "border-neutral-500 text-neutral-500 hover:border-orange-400 hover:text-orange-400 transition duration-50"}
     `}
   >
     {children}

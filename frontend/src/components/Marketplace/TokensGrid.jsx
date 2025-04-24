@@ -75,7 +75,7 @@ export default function TokenssGrid({ holdings = [] }) {
         {/* 3. filter dropdown */}
         <Dropdown>
           <DropdownButton
-            className="px-4 py-1.5 rounded-md border border-gray-300 bg-white text-sm text-neutral-700 font-medium ring-2 hover:ring-orange-300"
+            className="px-4 py-1.5 rounded-md border border-gray-300 bg-white text-sm !text-neutral-800 ring-2 hover:ring-orange-300"
           >
             Filter by: {category} ▾
           </DropdownButton>
@@ -84,7 +84,7 @@ export default function TokenssGrid({ holdings = [] }) {
               <DropdownItem
                 key={c}
                 onClick={() => setCat(c)}
-                className={`${c === category ? "font-bold text-orange-600" : ""} hover:bg-orange-100`}
+                className={`${c === category ? "font-bold !text-orange-600" : ""} hover:bg-orange-100`}
               >
                 {c}
               </DropdownItem>
@@ -95,7 +95,7 @@ export default function TokenssGrid({ holdings = [] }) {
         {/* 4. sort dropdown */}
         <Dropdown>
           <DropdownButton
-            className="px-4 py-1.5 rounded-md border border-gray-300 bg-white text-sm text-neutral-700 font-medium ring-2 hover:ring-orange-300"
+            className="px-4 py-1.5 rounded-md border border-gray-300 bg-white text-sm !text-neutral-800 ring-2 hover:ring-orange-300"
           >
             Sort by: {sort[0].toUpperCase() + sort.slice(1)} ▾
           </DropdownButton>
@@ -109,7 +109,7 @@ export default function TokenssGrid({ holdings = [] }) {
                 key={o.key}
                 onClick={() => setSort(o.key)}
                 className={`
-                  ${o.key === sort ? "font-bold text-orange-600" : ""}
+                  ${o.key === sort ? "font-bold !text-orange-600" : ""}
                   hover:bg-orange-100
                 `}
               >

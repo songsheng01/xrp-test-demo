@@ -4,21 +4,20 @@ import { useNavigate } from "react-router-dom";
 const HoldingCard = ({ token }) => {
   const navigate = useNavigate();
   const handleTrade   = () => navigate(`/trade/${token.symbol}`, { state: { token } })
-  const handleRedeem  = () => console.log("Redeem", token.symbol)
+  const handleRedeem  = () => navigate(`/redeem/${token.symbol}`, { state: { token } })
 
   const canRedeem = token.amount >= 1000
   const pct = Math.min(token.amount / 1000, 1) * 100
 
   return (
     <div
-      onClick={handleTrade}
       className="
         group
         relative w-full
         bg-white rounded-2xl shadow-md border-4 border-x-white border-b-white border-t-gray-100 px-4 pt-5 pb-3
         flex flex-col items-center
-        cursor-pointer hover:border-4 hover:border-orange-400 transition duration-100
-      "å
+        hover:border-4 hover:border-orange-400 transition duration-100
+      "
     >
       {/* horizontal stripe */}
       <div className="absolute top-0 left-0 w-full h-[5px] rounded-full bg-neutral-300 group-hover:opacity-0 transition duration-100"

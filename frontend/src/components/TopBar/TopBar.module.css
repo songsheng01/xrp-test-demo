@@ -1,21 +1,19 @@
-.marquee {
-    display: flex;
-    width: 200%; /* Enough space for two content sets */
-    animation: scroll-left 10s linear infinite;
-  }
-  
-  .marqueeContent {
-    display: flex;
-    flex-shrink: 0;
-    width: 50%;
-    white-space: nowrap;
-  }
-  
-  @keyframes scroll-left {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
+@keyframes color-cycle-green {
+  0%,100% { color:#008c00; }
+  50%     { color:#00bf00; }
+}
+
+@keyframes color-cycle-red {
+  0%,100% { color:#f87171; }
+  50%     { color:#dc2626; }
+}
+
+.colorCycleGreen {
+  animation: color-cycle-green 3s linear infinite;
+}
+
+
+
+.colorCycleRed {
+  animation: color-cycle-red 3s linear infinite;
+}

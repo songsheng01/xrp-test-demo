@@ -5,7 +5,7 @@ export default function ProfileHeader({
   walletAddress,
   avatarUrl = "https://i.pravatar.cc/120",
   stats,
-  onRedeem
+  handleRedeem
 }) {
   const navigate = useNavigate();
   const handleList = () => navigate("/list")
@@ -49,7 +49,7 @@ export default function ProfileHeader({
           List a Card
         </button>
         <button
-          onClick={onRedeem}
+          onClick={handleRedeem}
           className="px-5 py-2 border-2 rounded-lg border-pink-500 text-pink-500 font-semibold hover:bg-pink-100 transition duration-200"
         >
           Redeem a Card

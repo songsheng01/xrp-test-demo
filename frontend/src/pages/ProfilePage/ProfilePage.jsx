@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../../context/WalletContext" 
 import TopBar from "../../components/TopBar/TopBar"
 import SideBar from "../../components/SideBar/SideBar"
-import TokenCard from "../../components/TokenCard/TokenCard"
 import ProfileHeader from "../../components/Profile/ProfileHeader"
 import HoldingsGrid from "../../components/Profile/HoldingsGrid"
 
@@ -26,7 +26,9 @@ import {
 } from "../../components/tailwind_utils/alert"
 
 export default function ProfilePage() {
+  const navigate = useNavigate()
   const { walletAddress } = useContext(WalletContext)
+  const showRedeemHistory = () => navigate("/redeemhistory")
 
   /* demo data – swap with real hooks later */
   const stats = {
@@ -55,7 +57,7 @@ export default function ProfilePage() {
   const [openAlert, setOpenAlert] = useState(false)   // modal state
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-4 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-80 px-4 pb-2 pt-1">
       {/* top nav */}
       <div className="mb-2">
         <TopBar />
@@ -70,6 +72,7 @@ export default function ProfilePage() {
           <ProfileHeader
             walletAddress={walletAddress}
             stats={stats}
+            handleRedeem={() => setOpenAlert(true)}
           />
 
           {/* holdings grid */}
@@ -82,19 +85,19 @@ export default function ProfilePage() {
         <Alert
           open={openAlert}
           onClose={() => setOpenAlert(false)}
-          className="rounded-2xl ring-4 ring-[#ff7700] shadow-sm !max-w-2xl"
+          className="rounded-2xl shadow-sm !max-w-2xl"
         >
-          <AlertTitle className="!text-xl !text-center !text-[#ff7700]">Redeem Guidelines</AlertTitle>
-          <AlertDescription className="!text-lg text-neutral-700 pt-2">
-          Click on the card you would like to redeem to explore redeem options. <br/>
+          <AlertTitle className="!text-xl !text-center !text-[#ff7700]">Redemption Guidelines</AlertTitle>
+          <AlertDescription className="!text-lg !text-neutral-700 pt-4 pb-5">
+          Click on the card you would like to redeem to explore redemption options. <br/>
           A card can be redeemed with 1000 tokens.
           </AlertDescription>
-          <AlertActions>
+          <AlertActions className="flex justify-center">
             <button
-              onClick={() => setOpenAlert(false)}
-              className="px-6 py-2 rounded-md bg-[#ff7700] text-white font-semibold hover:brightness-110"
+              onClick={showRedeemHistory}
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#ff7700] to-[#ff03ea] text-white font-semibold hover:brightness-110 transition duration-200"
             >
-              OK
+              View My Redemption History
             </button>
           </AlertActions>
         </Alert>

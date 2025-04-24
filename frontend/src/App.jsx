@@ -9,6 +9,8 @@ import AboutPage from "./pages/AboutPage/About";
 import TradingPage from "./pages/TradingPage/TradingPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import ListingPage from "./pages/ListingPage/ListingPage";
+import RedeemPage from "./pages/RedeemPage/RedeemPage";
+import RedeemHistoryPage from "./pages/RedeemPage/RedeemHistoryPage";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
       <Route path="/about" element={<AboutPage />}/>
       <Route path="/trade/:tokenId" element={<TradingPage />} />
       <Route path="/list" element={<ListingPage />}/>
+      <Route path="/redeem/:tokenId" element={<RedeemPage />} />
+      <Route path="/redeemhistory" element={<RedeemHistoryPage />}/>
     </Routes>
   );
 };
