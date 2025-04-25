@@ -1,6 +1,6 @@
 import express from "express";
 import {prepareBuyOffer,prepareSellOffer,getOrderBook,fetchTransaction} from '../models/xprlOperation.js';
-import { uploadSellOrder } from "../models/orderOperation.js";
+import { uploadSellOrder,getHistoryOrder } from "../models/orderOperation.js";
 const testRouter = express.Router();
 
 testRouter.post('/buy', async (req ,res) =>{
@@ -29,7 +29,8 @@ testRouter.post('/offers', async (req ,res) =>{
     try{
         const {currency} = req.body;
         const cur_offers = await getOrderBook(currency);
-        res.status(200).json({ success: true,currentOffer: cur_offers});
+        const orderHistory = await getHistoryOrder(currency);
+        res.status(200).json({ success: true,currentOffer: cur_offers,orderHistory});
     }catch(error){
         console.error('Error:', error);
         res.status(500).json({ success: false, message: error.message });

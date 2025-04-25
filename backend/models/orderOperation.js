@@ -33,4 +33,25 @@ async function uploadSellOrder(txn_id,productId, price, quantity, time,buyer,sel
   }
 }
 
-export { uploadSellOrder }
+async function getHistoryOrder(productId) {
+  const params = {
+    TableName: "sell_order",
+    IndexName: "productId-index",
+    KeyConditionExpression: "productId = :pid",
+    ExpressionAttributeValues: {
+      ":pid": productId,
+    },
+    ScanIndexForward: true, 
+  };
+
+  try {
+    const { Items } = await docClient.send(new QueryCommand(params));
+    console.log(`Found ${Items.length} orders for productId=${productId}`);
+    return Items;
+  } catch (err) {
+    console.error("Error querying history:", err);
+    throw err;
+  }
+}
+
+export { uploadSellOrder,getHistoryOrder }
