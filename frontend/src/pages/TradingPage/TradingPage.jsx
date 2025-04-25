@@ -32,13 +32,17 @@ export default function TradingPage() {
 
   const [asks,setAsk] = useState([]);
   const [bids,setBid] = useState([]);
+  const [cardInfo,setCardInfo] = useState(null);
   const [orderHistory,setOrderHistory] = useState([]);
   const fectchInfo = async () => {
     try {
       const responese = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`,{currency:"TESTHPS"}); // NEED TO CHANGE LATTER
+      const responese2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`,{currency:"5445535448505300000000000000000000000000"}); // NEED TO CHANGE LATTER
       setAsk(responese.data.currentOffer.sellOffers);
       setBid(responese.data.currentOffer.buyOffers);
       setOrderHistory(responese.data.orderHistory);
+      console.log(responese2.data);
+      setCardInfo(responese2.data);
     }catch(err){
       console.log(err);
       console.error('Error refreshing file list:', err);
