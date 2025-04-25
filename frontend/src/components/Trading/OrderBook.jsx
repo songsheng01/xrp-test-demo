@@ -15,8 +15,8 @@ export default function OrderBook({
           {asks.slice(0, 5).map(([price, amount], i) => (
             <Row
               key={`ask-${i}`}
-              price={price}
-              amount={amount}
+              price={Number(price).toFixed(4)}
+              amount={Number(amount).toFixed(4)}
               color="text-red-600"
             />
           ))}
@@ -32,8 +32,8 @@ export default function OrderBook({
           {bids.slice(0, 5).map(([price, amount], i) => (
             <Row
               key={`bid-${i}`}
-              price={price}
-              amount={amount}
+              price={Number(price).toFixed(4)}
+              amount={Number(amount).toFixed(4)}
               color="text-[#00a300]"
             />
           ))}
@@ -48,7 +48,7 @@ export default function OrderBook({
 function Row({ price, amount, color }) {
   return (
     <>
-      <span className={`font-medium ${color}`}>{price.toFixed(4)}</span>
+      <span className={`font-medium ${color}`}>{Number(price).toFixed(4)}</span>
       <span className={`${color}`}>{amount}</span>
     </>
   )
