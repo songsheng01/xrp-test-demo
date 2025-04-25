@@ -33,7 +33,7 @@ export default function OrderBook({
             <Row
               key={`bid-${i}`}
               price={Number(price).toFixed(4)}
-              amount={Number(amount).toFixed(4)}
+              amount={Number().toFixed(4)}
               color="text-[#00a300]"
             />
           ))}

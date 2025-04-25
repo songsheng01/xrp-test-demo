@@ -1,5 +1,5 @@
 // src/pages/TradingPage.jsx
-import React,{ useState,useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import TokenHeader from "../../components/Trading/TokenHeader"
 import TokenImage from "../../components/Trading/TokenImage"
@@ -31,27 +31,33 @@ export default function TradingPage() {
   }
 
   // const comInfo = useState(null);
-  const [asks,setAsk] = useState([]);
-  const [bids,setBid] = useState([]);
-  const [cardInfo,setCardInfo] = useState(null);
-  const [orderHistory,setOrderHistory] = useState([]);
+  const [asks, setAsk] = useState([]);
+  const [bids, setBid] = useState([]);
+  const [cardInfo, setCardInfo] = useState(null);
+  const [orderHistory, setOrderHistory] = useState([]);
   const fectchInfo = async () => {
     try {
-      const responese = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`,{currency:"TESTHPS"}); // NEED TO CHANGE LATTER
-      const responese2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`,{currency:"5445535448505300000000000000000000000000"}); // NEED TO CHANGE LATTER
-      setAsk(responese.data.currentOffer.sellOffers);
-      setBid(responese.data.currentOffer.buyOffers);
+      const responese = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER
+      const responese2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`, { currency: "5445535448505300000000000000000000000000" }); // NEED TO CHANGE LATTER
+      setAsk(responese.data.currentOffer.sellOffers.map(o => [
+        Number(o.quality) / 1_000_000,          // price per token
+        Number(o.TakerGets.value)         // quantity
+      ]));
+      setBid(responese.data.currentOffer.buyOffers.map(o => [
+        1 / (Number(o.quality) * 1_000_000),          // price per token
+        Number(o.TakerPays.value)         // quantity
+      ]));
       setOrderHistory(responese.data.orderHistory);
       console.log(responese2.data);
       setCardInfo(responese2.data);
-    }catch(err){
+    } catch (err) {
       console.log(err);
       console.error('Error refreshing file list:', err);
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     fectchInfo();
-  },[]);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-2 pt-1">
@@ -97,11 +103,11 @@ export default function TradingPage() {
 
             <div className="flex gap-4 flex-[0_0_40%] min-h-0">
               <PriceChart tokenId={tokenId} className="flex-1 h-full min-h-0" />
-              <OrderBook tokenId={tokenId}  bids={bids} asks={asks} className="w-1/5 h-full" />
+              <OrderBook tokenId={tokenId} bids={bids} asks={asks} className="w-1/5 h-full" />
             </div>
 
             <OrderForm tokenId={tokenId} currentPrice={10.89} />
-            
+
             <OrderHistory tokenId={tokenId} />
           </div>
         </div>
