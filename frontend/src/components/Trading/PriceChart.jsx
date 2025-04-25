@@ -7,17 +7,18 @@ import dayjs from "dayjs"
  *  - tokenId   : string  (chart title / API key)
  *  - className : optional Tailwind classes for sizing (flex-1, h-full, etc.)
  */
-export default function PriceChart({ tokenId, className = "" }) {
+export default function PriceChart({ tokenId, trades = [], className = "" }) {
   /* ── interval selector ─────────────────────────────────────────── */
   const intervals = ["1m", "1h", "1d"]
   const [interval, setInterval] = useState("1d")
 
   /* ── placeholder OHLC data (replace w/ real query) ─────────────── */
-  const dataByInterval = useMemo(() => ({
-    "1m": genData(20, 1),   // 60 pts @ 1‑min gap
-    "1h": genData(20, 60),  // 72 pts @ 1‑hour gap (3 d)
-    "1d": genData(20, 60 * 24) // 90 pts @ 1‑day gap (3 mo)
-  }), [])
+  // const dataByInterval = useMemo(() => ({
+  //   "1m": genData(20, 1),   // 60 pts @ 1‑min gap
+  //   "1h": genData(20, 60),  // 72 pts @ 1‑hour gap (3 d)
+  //   "1d": genData(20, 60 * 24) // 90 pts @ 1‑day gap (3 mo)
+  // }), [])
+  const dataByInterval = useMemo(() => buildOhlcSeries(trades), [trades])
 
   /* pick current series */
   const series = [
@@ -99,3 +100,35 @@ function genData(points, minutesGap) {
 }
 const rand  = (min, max) => Math.random() * (max - min) + min
 const round = num => Math.round(num * 100) / 100
+
+function buildOhlcSeries(trades) {
+  if (!trades.length) return { "1m": [], "1h": [], "1d": [] }
+
+  //  oldest-first makes bucketing easier
+  const asc = [...trades].reverse()
+
+  const group = (granularity) => {
+    const map = new Map() // key = bucket start ISO, value = []
+    asc.forEach(t => {
+      const ts = dayjs(t.time).startOf(granularity).toISOString()
+      if (!map.has(ts)) map.set(ts, [])
+      map.get(ts).push(t.price)
+    })
+
+    return [...map.entries()].map(([iso, prices]) => ({
+      x: new Date(iso),
+      y: [
+        prices[0],                          // open
+        Math.max(...prices),                // high
+        Math.min(...prices),                // low
+        prices[prices.length - 1]           // close
+      ]
+    }))
+  }
+
+  return {
+    "1m": group("minute"),   // use as many buckets as trades supply
+    "1h": group("hour"),
+    "1d": group("day")
+  }
+}

@@ -142,7 +142,7 @@ export default function TradingPage() {
             />
 
             <div className="flex gap-4 flex-[0_0_40%] min-h-0">
-              <PriceChart tokenId={tokenId} className="flex-1 h-full min-h-0" />
+              <PriceChart tokenId={tokenId} trades={orderHistory} className="flex-1 h-full min-h-0" />
               <OrderBook tokenId={tokenId} bids={bids} asks={asks} className="w-1/5 h-full" />
             </div>
 
