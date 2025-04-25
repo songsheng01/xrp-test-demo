@@ -4,10 +4,11 @@ import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
-async function createNewNft(token,type,pic_adr,pcs,price) {
+async function createNewNft(token,type,pic_adr,pcs,price,name) {
     
     let newNFT  = {
         nft_token : {S: String(token)},
+        name: {S:String(name)},
         type : {S: String(type).toLowerCase()},
         pcs_list : { L : [ { S: String(pcs) } ] },
         picture : {S : String(pic_adr)},
@@ -92,32 +93,43 @@ async function deleteRandomNft(nft_token) {
 }
 
 async function updatePrice(nft_token, newPrice) {
-    const params = {
-      TableName: "xprl_nft_table",
-      Key: {
-        nft_token: String(nft_token)
-      },
-      UpdateExpression: "SET price_rate = :newPrice",
-      ExpressionAttributeValues: {
-        ":newPrice": newPrice  // plain JS number
-      },
-      ReturnValues: "UPDATED_NEW"
-    };
-  
-    try {
-      const command = new UpdateCommand(params);
-      const response = await docClient.send(command);
-      return response;
-    } catch (error) {
-      if (error.name === "ConditionalCheckFailedException") {
-        console.log("Current price is lower or equal. No update performed.");
-        return null;
-      }
-      console.error("Error updating price:", error);
-      throw error;
-    }
+  const getParams = {
+    TableName: 'xprl_nft_table',
+    Key: { nft_token: String(nft_token) },
+    ProjectionExpression: 'price_rate'
+  };
+
+  const { Item } = await docClient.send(new GetCommand(getParams));
+  if (!Item) throw new Error('NFT token not found');
+
+  const currentPrice = Number(Item.price_rate);
+  const priceDiff    = newPrice - currentPrice;
+  const pricePct     = currentPrice === 0 ? 0 : priceDiff / currentPrice;
+
+  const updateParams = {
+    TableName: 'xprl_nft_table',
+    Key: { nft_token: String(nft_token) },
+    UpdateExpression: `
+      SET price_rate = :newPrice,
+          price_pct  = :pricePct
+    `,
+    ExpressionAttributeValues: {
+      ':newPrice': newPrice,
+      ':pricePct':  pricePct
+    },
+    ReturnValues: 'ALL_NEW'
+  };
+
+  try {
+    const { Attributes: updatedItem } =
+      await docClient.send(new UpdateCommand(updateParams));
+    return { updatedItem, priceDiff, pricePct };
+  } catch (err) {
+    console.error('Error updating price:', err);
+    throw err;
   }
-  
+}
+
 async function scanAll() {
     const params = {
         TableName: "xprl_nft_table"
@@ -156,4 +168,20 @@ async function searchByType(type) {
   }
 }
 
-export { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll,searchByType }
+async function searchByToken(nft_token) {
+  const params = {
+    TableName: "xprl_nft_table",
+    Key: { nft_token: String(nft_token) }
+  };
+
+  try {
+    const command = new GetCommand(params);
+    const { Item } = await docClient.send(command);
+    return Item ?? null;          // 未找到时返回 null
+  } catch (error) {
+    console.error("Error fetching NFT by token:", error);
+    throw error;
+  }
+}
+
+export { createNewNft, addExisitsNft, deleteRandomNft,updatePrice,scanAll,searchByType,searchByToken }

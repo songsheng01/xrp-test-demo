@@ -30,15 +30,15 @@ export default function TradingPage() {
     volume24h: 3500000
   }
 
-  // const comInfo = useState(null);
   const [asks,setAsk] = useState([]);
   const [bids,setBid] = useState([]);
+  const [orderHistory,setOrderHistory] = useState([]);
   const fectchInfo = async () => {
     try {
       const responese = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`,{currency:"TESTHPS"}); // NEED TO CHANGE LATTER
-      console.log(responese.data.currentOffer.buyOffers);
       setAsk(responese.data.currentOffer.sellOffers);
       setBid(responese.data.currentOffer.buyOffers);
+      setOrderHistory(responese.data.orderHistory);
     }catch(err){
       console.log(err);
       console.error('Error refreshing file list:', err);
