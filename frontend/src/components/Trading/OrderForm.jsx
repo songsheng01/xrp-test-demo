@@ -1,4 +1,6 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import axios from "axios"
+import { WalletContext } from '../../context/WalletContext';
 
 const ORDER_TYPES = ["Market", "Limit", "Stop", "Trailing Stop"]
 
@@ -8,14 +10,63 @@ export default function OrderForm({ tokenId, currentPrice }) {
   const [type, setType] = useState("Market")
   const [limitPrice, setLimit] = useState(currentPrice)
   const [amountTok, setAmountTok] = useState("")
+  const { walletAddress,connectWallet, signAndSubmit,ensureTrustLine } = useContext(WalletContext);
 
   /* derived helper */
   const isMarket = type === "Market"
 
-  const handleSubmit = e => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
     // TODO: connect to backend / wallet
     console.log({ side, type, limitPrice, amountTok })
+    let userAddress = walletAddress;
+    if (!userAddress) {
+      userAddress = await connectWallet();
+    }
+
+    console.log(userAddress);
+    try {
+      if(type === 'Limit') {
+        const buy_or_sell = side === 'Buy'? "buy":"sell";
+        let response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+          userAddress:userAddress,
+          currency:"TESTHPS",
+          tokenAmount:amountTok,
+          xrpAmount:limitPrice * amountTok
+        });
+        if (response.data.response.needsTrust === true) {
+          const { trustTransaction } = response.data.response;
+          const trustRes = await ensureTrustLine({ trustTransaction });
+          console.log(trustRes);
+          if (trustRes.success !== true) {
+            console.log(trustRes);
+            throw new Error(`TrustSet 失败：${trustRes.error}`);
+          }else{
+            response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+              userAddress: userAddress,
+              currency: "TESTHPS",
+              tokenAmount: amountTok,
+              xrpAmount: limitPrice * amountTok,
+            });
+          }
+        }
+        const offerTransaction = response.data.response.offerTransaction;
+        const res = await signAndSubmit(offerTransaction);
+        if (res.success){
+          console.log('TxHash:', res.txHash);
+          response = await axios.post(`http://localhost:5001/api/transaction`, {
+            TxHash:res.txHash
+          });
+          console.log(response);
+        }else {
+          console.log(res.error);
+        }
+      }
+    } catch (error) {
+      console.error('Error submitting offer:', error);
+      alert('There was an error submitting your offer.');
+    }
+
   }
 
   return (
@@ -120,7 +171,6 @@ export default function OrderForm({ tokenId, currentPrice }) {
           </span>
         </div>
       </div>
-
     </form>
   )
 }

@@ -55,6 +55,7 @@ export const WalletProvider = ({ children }) => {
           const bal = await fetchAvailableXrp(addr);
           setXrpBalance(bal);
         }
+        return addr;
       } else {
         alert("Please install GemWallet extension!");
       }

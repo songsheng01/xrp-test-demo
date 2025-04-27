@@ -49,7 +49,6 @@ export default function TradingPage() {
         Number(o.TakerPays.value)         // quantity
       ]));
       setOrderHistory(responese.data.orderHistory);
-      console.log(responese2.data);
       setCardInfo(responese2.data);
     } catch (err) {
       console.log(err);
