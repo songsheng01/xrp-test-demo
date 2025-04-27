@@ -193,7 +193,7 @@ export default function ListingPage() {
   ])
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800 px-4 pb-2 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800">
       <div className="mb-2">
         <TopBar />
       </div>

@@ -93,14 +93,14 @@ export default function TradingPage() {
   const usdPrice = (cardInfo?.price_rate ?? 0) * xrpUsd
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 px-4 pb-2 pt-1">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800">
       {/* Top bar */}
       <div className="mb-2">
         <TopBar />
       </div>
 
       {/* Page Content */}
-      <div className="flex flex-1 gap-4 min-h-0 h-full">
+      <div className="flex flex-1 gap-2 min-h-0 h-full">
         {/* Sidebar */}
         <SideBar currentPage="trading" />
         {/* Main content area */}

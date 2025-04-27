@@ -20,6 +20,32 @@ export default function PriceChart({ tokenId, trades = [], className = "" }) {
   // }), [])
   const dataByInterval = useMemo(() => buildOhlcSeries(trades), [trades])
 
+  /* map interval → milliseconds of one slot */
+  const slotSize = { "1m": 60_000, "1h": 3_600_000, "1d": 86_400_000 }
+
+  /* width of 20 consecutive slots, regardless of gaps */
+  const rangeMs = slotSize[interval] * 20
+
+  /* ── derive y-axis min / max for those 20 slots ──────────────────────────── */
+  const [yMin, yMax] = useMemo(() => {
+    const series = dataByInterval[interval]
+    if (!series.length) return [undefined, undefined]      // let Apex decide
+
+    const lastX = series[series.length - 1].x.getTime()
+    const firstX = lastX - rangeMs
+
+    const visible = series.filter(p => p.x.getTime() >= firstX)
+    if (!visible.length) return [undefined, undefined]
+
+    const highs = visible.map(p => p.y[1])
+    const lows = visible.map(p => p.y[2])
+
+    const hi = Math.max(...highs)
+    const lo = Math.min(...lows)
+    const pad = (hi - lo) * 0.02 || 0.02      // 2 % padding, min 0.02
+    return [lo - pad, hi + pad]
+  }, [dataByInterval, interval, rangeMs])
+
   /* pick current series */
   const series = [
     {
@@ -38,9 +64,12 @@ export default function PriceChart({ tokenId, trades = [], className = "" }) {
     },
     xaxis: {
       type: "datetime",
-      labels: { datetimeUTC: false }
+      labels: { datetimeUTC: false },
+      range: rangeMs
     },
     yaxis: {
+      min: yMin,
+      max: yMax,
       tooltip: { enabled: true },
       labels: { formatter: val => val.toFixed(2) }
     },
@@ -87,7 +116,7 @@ function genData(points, minutesGap) {
   for (let i = 0; i < points; i++) {
     const open = rand(lastClose * 0.98, lastClose * 1.02)
     const high = rand(open * 1.01, open * 1.03)
-    const low  = rand(open * 0.97, open * 0.99)
+    const low = rand(open * 0.97, open * 0.99)
     const close = rand(low, high)
 
     out.push({
@@ -98,7 +127,7 @@ function genData(points, minutesGap) {
   }
   return out
 }
-const rand  = (min, max) => Math.random() * (max - min) + min
+const rand = (min, max) => Math.random() * (max - min) + min
 const round = num => Math.round(num * 100) / 100
 
 function buildOhlcSeries(trades) {

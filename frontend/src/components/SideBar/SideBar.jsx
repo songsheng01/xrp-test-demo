@@ -21,7 +21,7 @@ export default function SideBar({ currentPage }) {
   const formatAddress = addr => addr.slice(0, 4) + "..." + addr.slice(-4)
 
   return (
-    <Sidebar className="w-80 flex-shrink-0 self-stretch flex flex-col h-full min-h-0 bg-white backdrop-blur-lg border-white/40 shadow-lg rounded-2xl">
+    <Sidebar className="w-[18%] max-w-80 flex-shrink-0 self-stretch flex flex-col h-full min-h-0 bg-white backdrop-blur-lg border-white/40 shadow-lg rounded-2xl">
       {/* aurora gradient stripe */}
       <span
         className="absolute inset-y-0 left-0 w-3 rounded-l-2xl

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styles from './tokenPage.module.css';
 import PurchaseBox from '../../components/PurchaseBox/PurchaseBox';
-import DetailBox from '../../components/DetailBox/DetailBox';
 import sampleImage from '../../assets/h1.png';
 import OrderBoard from '../../components/Orderboard/Orderboard';
 import { useLocation } from 'react-router-dom';
@@ -138,7 +137,6 @@ function TokenPage() {
         </div>
         <OrderBoard />
         <PurchaseBox />
-        < DetailBox />
       </div>
     </div>
   );

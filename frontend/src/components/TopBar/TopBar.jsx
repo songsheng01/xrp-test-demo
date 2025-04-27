@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { Link } from "react-router-dom"
 import { WalletContext } from "../../context/WalletContext";
 import styles from "./TopBar.module.css"
 
@@ -15,18 +16,11 @@ export default function TopBar() {
 
   return (
     <div className="w-full h-20 px-4 flex items-center gap-10 justify-between bg-white backdrop-blur-lg border-b border-white/40 shadow-sm rounded-2xl">
-      {/* Left: Wallet Button */}
-      <div>
-        {walletAddress ? (
-          <div className="text-xl font-bold px-16 py-3 rounded-2xl bg-gradient-to-r from-[#ff03ea] to-[#ff7700] text-white">
-            Wallet Connected
-          </div>
-        ) : (
-          <button className="text-xl font-bold px-20 py-3 rounded-2xl bg-gradient-to-r from-[#ff03ea] to-[#ff7700] hover:brightness-110 transition duration-200 text-white" onClick={connectWallet}>
-            Connect Wallet
-          </button>
-        )}
-      </div>
+      {/* Left: Logo */}
+      <Link to="/marketplace"
+        className="ml-6 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff5e00] to-[#ff9600] mr-5 hover:brightness-110 transition">
+        X-Card
+      </Link>
 
       {/* Center: Trending Bar */}
       <div className="flex flex-1 overflow-hidden relative space-x-10 h-6 justify-center items-center whitespace-nowrap">
@@ -40,10 +34,19 @@ export default function TopBar() {
         <span className={`${styles.colorCycleGreen} font-semibold`}>JORDAN 859.97 +24.1%</span>
       </div>
 
-      {/* Right: Logo */}
-      <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ff5e00] to-[#ff9600] mr-5">
-        X-Card
+      {/* Right: Wallet Button */}
+      <div>
+        {walletAddress ? (
+          <div className="text-xl font-semibold px-10 py-3 rounded-2xl bg-gradient-to-r from-[#ff03ea] to-[#ff7700] text-white">
+            Wallet Connected
+          </div>
+        ) : (
+          <button className="text-xl font-semibold px-12 py-3 rounded-2xl bg-gradient-to-r from-[#ff03ea] to-[#ff7700] hover:brightness-110 transition duration-200 text-white" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
       </div>
+
     </div>
   )
 }

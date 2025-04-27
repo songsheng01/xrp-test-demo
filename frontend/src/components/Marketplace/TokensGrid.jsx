@@ -53,9 +53,9 @@ export default function TokenssGrid({ holdings = [] }) {
   /* ── UI row with 4 elements ─────────────────── */
   return (
     <div className="flex-1 flex flex-col min-h-0 mt-4">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 mx-4">
         {/* 1. status text */}
-        <span className="basis-[30%] shrink-0 ml-2 text-lg text-neutral-800">
+        <span className="basis-[30%] shrink-0 text-lg text-neutral-800">
           Showing&nbsp;
           <span className="font-semibold">{shown.length}</span>&nbsp;of&nbsp;
           <span className="font-semibold">{holdings.length}</span>&nbsp;

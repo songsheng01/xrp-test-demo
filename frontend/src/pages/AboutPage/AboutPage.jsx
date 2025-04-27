@@ -34,7 +34,7 @@ export default function AboutPage() {
   const handleMyHoldingsClick = () => navigate("/ownTokenCardPage");
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-900 p-4">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-neutral-800">
       <div className="mb-4">
         <TopBar />
       </div>
