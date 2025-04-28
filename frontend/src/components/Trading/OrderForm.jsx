@@ -1,4 +1,4 @@
-import React, { useState, useContext,useEffect } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import axios from "axios"
 import { WalletContext } from '../../context/WalletContext';
 
@@ -10,12 +10,12 @@ export default function OrderForm({ tokenId, currentPrice }) {
   const [type, setType] = useState("Market")
   const [limitPrice, setLimit] = useState(currentPrice)
   const [amountTok, setAmountTok] = useState("")
-  const { walletAddress,connectWallet, signAndSubmit,ensureTrustLine } = useContext(WalletContext);
+  const { walletAddress, connectWallet, signAndSubmit, ensureTrustLine } = useContext(WalletContext);
 
   /* derived helper */
   const isMarket = type === "Market"
-  
-  const handleSubmit = async(e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // TODO: connect to backend / wallet
     console.log({ side, type, limitPrice, amountTok })
@@ -27,16 +27,24 @@ export default function OrderForm({ tokenId, currentPrice }) {
     }
 
     try {
-      if(type === 'Limit') {
-        const buy_or_sell = side === 'Buy'? "buy":"sell";
+      /* ── Limit and Market both use the same backend route ── */
+      const buy_or_sell = side === 'Buy' ? "buy" : "sell";
+
+      /* 1) determine price for Market vs Limit */
+      let price = limitPrice
+      if (type === "Market") {
+        price = side === "Buy" ? 1000 : 0.0001        // BUY @ 1000, SELL @ 0 (arbitrarily extreme limits)
+      }
+
+      if (type === 'Limit' || type === 'Market') {
 
         console.log(userAddress);
 
         let response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
           userAddress,
-          currency:"TESTHPS",
-          tokenAmount:amountTok,
-          xrpAmount:limitPrice * amountTok
+          currency: "TESTHPS",
+          tokenAmount: amountTok,
+          xrpAmount: price * amountTok
         });
         if (response.data.response.needsTrust === true) {
           const { trustTransaction } = response.data.response;
@@ -44,25 +52,25 @@ export default function OrderForm({ tokenId, currentPrice }) {
           console.log(trustRes);
           if (trustRes.success !== true) {
             console.log(trustRes);
-            throw new Error(`TrustSet 失败：${trustRes.error}`);
-          }else{
+            throw new Error(`TrustSet Failed：${trustRes.error}`);
+          } else {
             response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
               userAddress,
               currency: "TESTHPS",
               tokenAmount: amountTok,
-              xrpAmount: limitPrice * amountTok,
+              xrpAmount: price * amountTok,
             });
           }
         }
         const offerTransaction = response.data.response.offerTransaction;
         const res = await signAndSubmit(offerTransaction);
-        if (res.success){
+        if (res.success) {
           console.log('TxHash:', res.txHash);
           response = await axios.post(`http://localhost:5001/api/transaction`, {
-            TxHash:res.txHash
+            TxHash: res.txHash
           });
           console.log(response);
-        }else {
+        } else {
           console.log(res.error);
         }
       }
@@ -74,7 +82,7 @@ export default function OrderForm({ tokenId, currentPrice }) {
 
   useEffect(() => {
     connectWallet();
-    }, []);
+  }, []);
   return (
     <form
       onSubmit={handleSubmit}
@@ -134,8 +142,8 @@ export default function OrderForm({ tokenId, currentPrice }) {
           {isMarket ? (
             <>
               <span className="text-md">Market Price:</span>
-              <span className="text-md font-semibold text-[#ff7700]">
-                {currentPrice.toFixed(4)} XRP
+              <span className="w-32 rounded-md border-y-2 border-transparent py-1 text-[#ff7700] font-medium focus:outline-none focus:border-[#ff7700]">
+                {side === "Sell" ? "≤" : "≥"}{currentPrice.toFixed(4)} XRP
               </span>
             </>
           ) : (
@@ -148,14 +156,14 @@ export default function OrderForm({ tokenId, currentPrice }) {
                 step="0.0001"
                 value={limitPrice}
                 onChange={e => setLimit(e.target.value)}
-                className="w-32 rounded-md border-2 px-2 py-1 text-[#ff7700] font-semibold focus:outline-none focus:border-[#ff7700]"
+                className="w-32 rounded-md border-2 px-2 py-1 text-[#ff7700] font-medium focus:outline-none focus:border-[#ff7700]"
               />
             </>
           )}
           <span className="text-md">
             Max {side === "Buy" ? "Buy" : "Sell"}:
           </span>
-          <span className="text-md font-semibold text-[#ff7700]">
+          <span className="text-md font-medium text-[#ff7700]">
             54.95 {tokenId}
           </span>
         </div>
@@ -167,12 +175,12 @@ export default function OrderForm({ tokenId, currentPrice }) {
             type="number"
             value={amountTok}
             onChange={e => setAmountTok(e.target.value)}
-            className="w-32 rounded-md border-2 px-2 py-1 text-[#ff7700] font-semibold focus:outline-none focus:border-[#ff7700]"
+            className="w-32 rounded-md border-2 px-2 py-1 text-[#ff7700] font-medium focus:outline-none focus:border-[#ff7700]"
           />
           <span className="text-md">
             Order Value:
           </span>
-          <span className="text-md font-semibold text-[#ff7700]">
+          <span className="text-md font-medium text-[#ff7700]">
             1089.00 XRP
           </span>
         </div>

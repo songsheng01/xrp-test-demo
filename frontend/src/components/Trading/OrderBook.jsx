@@ -3,8 +3,8 @@ import React from "react"
 export default function OrderBook({
   tokenId,
   className = "",
-  asks = demoAsks,
-  bids = demoBids,
+  asks,
+  bids,
   lastPrice = 10.8905
 }) {
   return (
@@ -68,21 +68,3 @@ function Row({ price, amount, color }) {
     </>
   )
 }
-
-/* ───────── demo data (replace with live feed) ──────────────────── */
-
-const demoAsks = [
-  [10.9220, 200],
-  [10.9189, 1000],
-  [10.9030, 100],
-  [10.8951, 300],
-  [10.8923, 100]
-]
-
-const demoBids = [
-  [10.8900, 100],
-  [10.8897, 80],
-  [10.8708, 50],
-  [10.8680, 150],
-  [10.8630, 200]
-]

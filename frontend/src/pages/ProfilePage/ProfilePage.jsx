@@ -27,7 +27,7 @@ import {
 
 export default function ProfilePage() {
   const navigate = useNavigate()
-  const { walletAddress } = useContext(WalletContext)
+  const { walletAddress, connectWallet, signAndSubmit } = useContext(WalletContext)
   const showRedeemHistory = () => navigate("/redeemhistory")
 
   /* demo data – swap with real hooks later */

@@ -9,7 +9,7 @@ const testRouter = express.Router();
 testRouter.post('/buy', async (req ,res) =>{
     try{
         const {userAddress, currency, tokenAmount, xrpAmount} = req.body;
-        const response = await prepareSellOffer(userAddress, currency, tokenAmount, xrpAmount);
+        const response = await prepareBuyOffer(userAddress, currency, tokenAmount, xrpAmount);
         res.status(200).json({ success: true,response:response});
     }catch(error){
         console.error('Error:', error);
@@ -20,7 +20,7 @@ testRouter.post('/buy', async (req ,res) =>{
 testRouter.post('/sell', async (req ,res) =>{
     try{
         const {userAddress, currency, tokenAmount, xrpAmount} = req.body;
-        const response = await prepareBuyOffer(userAddress, currency, tokenAmount, xrpAmount);
+        const response = await prepareSellOffer(userAddress, currency, tokenAmount, xrpAmount);
         res.status(200).json({ success: true,response:response});
     }catch(error){
         console.error('Error:', error);

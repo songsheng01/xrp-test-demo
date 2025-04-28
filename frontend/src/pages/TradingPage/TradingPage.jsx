@@ -38,18 +38,19 @@ export default function TradingPage() {
 
   const fectchInfo = async () => {
     try {
-      const responese = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER
-      const responese2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`, { token: "5445535448505300000000000000000000000000" }); // NEED TO CHANGE LATTER
-      setAsk(responese.data.currentOffer.sellOffers.map(o => [
+      const response = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER
+      const response2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`, { token: "5445535448505300000000000000000000000000" }); // NEED TO CHANGE LATTER
+      setAsk(response.data.currentOffer.sellOffers.map(o => [
         Number(o.quality) / 1_000_000,          // price per token
         Number(o.TakerGets.value)         // quantity
       ]));
-      setBid(responese.data.currentOffer.buyOffers.map(o => [
+      setBid(response.data.currentOffer.buyOffers.map(o => [
         1 / (Number(o.quality) * 1_000_000),          // price per token
         Number(o.TakerPays.value)         // quantity
       ]));
-      setOrderHistory(responese.data.orderHistory);
-      setCardInfo(responese2.data);
+      setOrderHistory(response.data.orderHistory);
+      setCardInfo(response2.data);
+      console.log(response.data.currentOffer.buyOffers)
     } catch (err) {
       console.log(err);
       console.error('Error refreshing file list:', err);
@@ -76,7 +77,6 @@ export default function TradingPage() {
     const iv = setInterval(fetchXrpUsd, 60_000)
     return () => clearInterval(iv)
   }, [])
-
 
   const volume24h = useMemo(() => {
     if (!orderHistory?.length) return 0

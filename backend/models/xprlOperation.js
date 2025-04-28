@@ -39,13 +39,13 @@ export const checkOrPromptTrustLine = async (userAddress, currency) => {
 };
 
 /**
- * Prepare a buy order (OfferCreate) for the user to sign: they input coin, XRPL amount, and their address.
+ * Prepare a sell order (OfferCreate) for the user to sign: they input coin, XRPL amount, and their address.
  * @param {string} userAddress - User's wallet address.
- * @param {string} currency - Code of the coin to buy (e.g., "ABC").
- * @param {number|string} tokenAmount - Amount of currency they will buy.
- * @param {number|string} xrpAmount - Amount of XRPL they will spend.
+ * @param {string} currency - Code of the coin to sell (e.g., "ABC").
+ * @param {number|string} tokenAmount - Amount of currency they will sell.
+ * @param {number|string} xrpAmount - Amount of XRPL they will get.
  */
-export const prepareBuyOffer = async (userAddress, currency,tokenAmount, xrpAmount) => {
+export const prepareSellOffer = async (userAddress, currency,tokenAmount, xrpAmount) => {
   const client = new xrpl.Client(process.env.XRPL_ENDPOINT);
   await client.connect();
 
@@ -67,6 +67,7 @@ export const prepareBuyOffer = async (userAddress, currency,tokenAmount, xrpAmou
     const tx = {
       TransactionType: "OfferCreate",
       Account: userAddress,
+      Flags: { tfSell: true },
       TakerPays: xrpl.xrpToDrops(xrpAmount.toString()),
       TakerGets: { currency:currencyField, issuer: issuerAddress, value: tokenAmount.toString() }
     };
@@ -80,13 +81,13 @@ export const prepareBuyOffer = async (userAddress, currency,tokenAmount, xrpAmou
 };
 
 /**
- * Prepare a sell order (OfferCreate) for the user to sign: they input coin, token amount, and desired XRPL.
+ * Prepare a buy order (OfferCreate) for the user to sign: they input coin, token amount, and XRPL spent.
  * @param {string} userAddress - User's wallet address.
- * @param {string} currency - Code of the coin to sell (e.g., "ABC").
- * @param {number|string} tokenAmount - Amount of token they will sell.
- * @param {number|string} xrpAmount - Amount of XRPL they want to receive.
+ * @param {string} currency - Code of the coin to buy (e.g., "ABC").
+ * @param {number|string} tokenAmount - Amount of token they will buy.
+ * @param {number|string} xrpAmount - Amount of XRPL they want to spend.
  */
-export const prepareSellOffer = async (userAddress, currency, tokenAmount, xrpAmount) => {
+export const prepareBuyOffer = async (userAddress, currency, tokenAmount, xrpAmount) => {
   const client = new xrpl.Client(process.env.XRPL_ENDPOINT);
   await client.connect();
   try {
@@ -105,12 +106,14 @@ export const prepareSellOffer = async (userAddress, currency, tokenAmount, xrpAm
       await client.disconnect();
       return { success: true, needsTrust: true, trustTransaction };
     }
+    console.log(tokenAmount.toString())
     const tx = {
       TransactionType: "OfferCreate",
       Account: userAddress,
       TakerPays: { currency:currencyField, issuer: issuerAddress, value: tokenAmount.toString() },
       TakerGets: xrpl.xrpToDrops(xrpAmount.toString())
     };
+
     const prepared = await client.autofill(tx);
     await client.disconnect();
     return { success: true, needsTrust: false, offerTransaction: prepared };
