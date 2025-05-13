@@ -24,7 +24,7 @@ export default function SideBar({ currentPage }) {
     <Sidebar className="w-[18%] max-w-80 flex-shrink-0 self-stretch flex flex-col h-full min-h-0 bg-white backdrop-blur-lg border-white/40 shadow-lg rounded-2xl">
       {/* aurora gradient stripe */}
       <span
-        className="absolute inset-y-0 left-0 w-3 rounded-l-2xl
+        className="absolute inset-y-0 right-0 w-3 rounded-r-2xl
              bg-gradient-to-b from-violet-400 via-fuchsia-400
              via-rose-400 to-orange-500"
       />
