@@ -4,9 +4,11 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo ">>> preBuild PWD:" && pwd
         - npm ci --cache .npm --prefer-offline
     build:
       commands:
+        - echo ">>> build PWD:" && pwd
         - npm run build
   artifacts:
     baseDirectory: build
