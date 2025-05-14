@@ -24,7 +24,7 @@ export default function LandingPage() {
       >
         {/* 标题 */}
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-4">
-          X‑Card NFT Marketplace
+          X‑Card
         </h1>
 
         {/* 副标题 */}
