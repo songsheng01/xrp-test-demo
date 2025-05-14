@@ -78,7 +78,6 @@ export default function SideBar({ currentPage }) {
             </SidebarItem>
 
             <SidebarItem
-              href="/about"
               current={currentPage === "about"}
               className={clsx(
                 "flex items-center gap-4 text-xl font-semibold px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm hover:shadow-sm transition duration-200",
