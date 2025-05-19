@@ -1,6 +1,7 @@
 // src/pages/TradingPage.jsx
-import React, { useState, useEffect,useMemo } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { useParams } from "react-router-dom"
+import useOrderFeed from "../../hooks/useOrderFeed";
 import TokenHeader from "../../components/Trading/TokenHeader"
 import TokenImage from "../../components/Trading/TokenImage"
 import TokenStats from "../../components/Trading/TokenStats"
@@ -36,6 +37,8 @@ export default function TradingPage() {
   const [orderHistory, setOrderHistory] = useState([]);
   const [xrpUsd, setXrpUsd] = useState(0)
 
+  const events = useOrderFeed();
+
   const fectchInfo = async () => {
     try {
       const response = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER
@@ -63,7 +66,7 @@ export default function TradingPage() {
   useEffect(() => {
     const fetchXrpUsd = async () => {
       try {
-        // 这里用 CoinGecko 的公共 API 举例
+        // CoinGecko public API
         const resp = await axios.get(
           "https://api.coingecko.com/api/v3/simple/price",
           { params: { ids: "ripple", vs_currencies: "usd" } }
@@ -77,6 +80,62 @@ export default function TradingPage() {
     const iv = setInterval(fetchXrpUsd, 60_000)
     return () => clearInterval(iv)
   }, [])
+
+  useEffect(() => {
+    if (!events.length) return;
+    const e = events[events.length - 1];     // handle newest only
+
+    console.log("[HANDLE]", e.type, e.payload);
+
+    switch (e.type) {
+      /** full depth snapshot */
+      case "DEPTH_UPDATE": {
+        if (e.payload.currency !== "TESTHPS") return;   // TODO replace hard‑code
+
+        setAsk(
+          e.payload.sellOffers.map(o => [
+            Number(o.quality) / 1_000_000,
+            Number(o.TakerGets.value),
+          ]),
+        );
+        setBid(
+          e.payload.buyOffers.map(o => [
+            1 / (Number(o.quality) * 1_000_000),
+            Number(o.TakerPays.value),
+          ]),
+        );
+        break;
+      }
+
+      /** executed trade → order history */
+      case "ORDER_FILLED": {
+        const { fill, time } = e.payload;
+        if (fill.currency !== "TESTHPS") return;
+
+        /* update history */
+        setOrderHistory(h => [
+          ...h,
+          {
+            token: fill.currency,
+            side: "Buy",         // or derive from buyer/seller
+            amount: fill.tokenAmount,
+            value: fill.xrpAmount,
+            status: "Filled",
+            time
+          }
+        ]);
+
+        /* update headline price */
+        setCardInfo(ci =>
+          ci ? { ...ci, price_rate: fill.unitPrice } : ci
+        );
+        break;
+      }
+
+      default:
+        break;
+    }
+  }, [events]);
 
   const volume24h = useMemo(() => {
     if (!orderHistory?.length) return 0
@@ -147,7 +206,7 @@ export default function TradingPage() {
 
             <OrderForm tokenId={tokenId} currentPrice={10.89} />
 
-            <OrderHistory tokenId={tokenId} />
+            <OrderHistory tokenId={tokenId} orders={orderHistory} />
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+import { WebSocketServer } from "ws";
 import cors from "cors";
 import trustRoutes from "./routes/trustRoutes.js";
 import tokenTransferRoutes from "./routes/tokenTransferRoutes.js";
@@ -24,6 +26,18 @@ app.use("/api", xrpTransferRoutes);
 app.use("/api", issuerRoutes);
 app.use("/api", testRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const server = http.createServer(app);
+export const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws) => {
+  console.log("WebSocket client connected");
+  ws.on("close", () => console.log("WebSocket client disconnected"));
 });
+
+export const broadcast = (type, payload) => {
+  const msg = JSON.stringify({ type, payload });
+  console.log("[WS-SEND]", type, "→", wss.clients.size, "clients");
+  wss.clients.forEach(c => { if (c.readyState === 1) c.send(msg); });
+};
+
+server.listen(PORT, () => console.log(`HTTP & WS listening on ${PORT}`));

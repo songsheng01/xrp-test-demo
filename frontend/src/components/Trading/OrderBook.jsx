@@ -5,7 +5,7 @@ export default function OrderBook({
   className = "",
   asks,
   bids,
-  lastPrice = 10.8905
+  lastPrice = 10.9000
 }) {
   return (
     <div className={`h-full flex flex-col items-center px-2 ${className}`}>
