@@ -2,11 +2,8 @@ import express from "express";
 import http from "http";
 import { WebSocketServer } from "ws";
 import cors from "cors";
-import trustRoutes from "./routes/trustRoutes.js";
 import tokenTransferRoutes from "./routes/tokenTransferRoutes.js";
-import xrpTransferRoutes from "./routes/xrpTransferRoutes.js";
-import issuerRoutes from "./routes/issuerRoutes.js";
-import testRouter from "./routes/testRoutes.js";
+import tradeRouter from "./routes/tradeRoutes.js";
 import dotenv from "dotenv";
 
 // Load environment variables
@@ -20,11 +17,15 @@ app.use(cors());
 app.use(express.json()); // Enables JSON request body parsing
 
 // Routes
-app.use("/api", trustRoutes);
 app.use("/api", tokenTransferRoutes);
-app.use("/api", xrpTransferRoutes);
-app.use("/api", issuerRoutes);
-app.use("/api", testRouter);
+app.use("/api", tradeRouter);
+
+app.use("/health",(req,res) =>{
+  res.status(200).send("ok");
+})
+app.get("/healthcheck", (req, res) => {
+  res.status(200).send("OK");
+});
 
 const server = http.createServer(app);
 export const wss = new WebSocketServer({ server });
