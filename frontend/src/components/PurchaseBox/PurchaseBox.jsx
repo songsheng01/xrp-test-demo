@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import styles from './PurchaseBox.module.css';
 import { WalletContext } from '../../context/WalletContext';
+import config from '../../config/config';
 
 function PurchaseBox() {
   // 控制弹窗显示/隐藏的状态
@@ -32,7 +33,7 @@ function PurchaseBox() {
     setLoading(true);
     try {
       const buy_or_sell = activeTab === 'buy'? "buy":"sell";
-      let response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+      let response = await axios.post(`${config.BACKEND_ENDPOINT}/api/${buy_or_sell}`, {
         userAddress:walletAddress,
         currency:"TESTHPS",
         tokenAmount:quantity,
@@ -46,7 +47,7 @@ function PurchaseBox() {
           console.log(trustRes);
           throw new Error(`TrustSet 失败：${trustRes.error}`);
         }else{
-          response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+          response = await axios.post(`${config.BACKEND_ENDPOINT}/api/${buy_or_sell}`, {
             userAddress: walletAddress,
             currency: "TESTHPS",
             tokenAmount: quantity,
@@ -58,7 +59,7 @@ function PurchaseBox() {
       const res = await signAndSubmit(offerTransaction);
       if (res.success){
         console.log('TxHash:', res.txHash);
-        response = await axios.post(`http://localhost:5001/api/transaction`, {
+        response = await axios.post(`${config.BACKEND_ENDPOINT}/api/transaction`, {
           TxHash:res.txHash
         });
         console.log(response);

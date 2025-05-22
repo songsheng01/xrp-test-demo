@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react"
 import axios from "axios"
 import { WalletContext } from '../../context/WalletContext';
+import config from "../../config/config";
 
 const ORDER_TYPES = ["Market", "Limit", "Stop", "Trailing Stop"]
 
@@ -40,7 +41,7 @@ export default function OrderForm({ tokenId, currentPrice }) {
 
         console.log(userAddress);
 
-        let response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+        let response = await axios.post(`${config.BACKEND_ENDPOINT}/api/${buy_or_sell}`, {
           userAddress,
           currency: "TESTHPS",
           tokenAmount: amountTok,
@@ -54,7 +55,7 @@ export default function OrderForm({ tokenId, currentPrice }) {
             console.log(trustRes);
             throw new Error(`TrustSet Failed：${trustRes.error}`);
           } else {
-            response = await axios.post(`http://localhost:5001/api/${buy_or_sell}`, {
+            response = await axios.post(`${config.BACKEND_ENDPOINT}/api/${buy_or_sell}`, {
               userAddress,
               currency: "TESTHPS",
               tokenAmount: amountTok,
@@ -66,7 +67,7 @@ export default function OrderForm({ tokenId, currentPrice }) {
         const res = await signAndSubmit(offerTransaction);
         if (res.success) {
           console.log('TxHash:', res.txHash);
-          response = await axios.post(`http://localhost:5001/api/transaction`, {
+          response = await axios.post(`${config.BACKEND_ENDPOINT}/api/transaction`, {
             TxHash: res.txHash
           });
           console.log(response);
