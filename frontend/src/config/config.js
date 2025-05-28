@@ -1,5 +1,5 @@
 // const backendEndpointProduct = "http://localhost:5001";
-const backendEndpointProduct = "https://backend.xcard.tech/health";
+const backendEndpointProduct = "https://backend.xcard.tech";
 const frontendEndpointProduct = "http://localhost:3000";
 
 const config = {
