@@ -38,7 +38,7 @@ export default function TradingPage() {
   const [xrpUsd, setXrpUsd] = useState(0)
 
   const events = useOrderFeed();
-
+  console.log(config.BACKEND_ENDPOINT);
   const fectchInfo = async () => {
     try {
       const response = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER

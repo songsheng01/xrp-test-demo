@@ -74,7 +74,7 @@ function PurchaseBox() {
       handleCloseModal();
     }
   };
-
+  console.log(config.BACKEND_ENDPOINT);
   return (
     <div className={styles.offerSection}>
       {/* 新增 Tab 选择区域 */}
