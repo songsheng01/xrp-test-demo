@@ -56,4 +56,14 @@ router.post('/search', async (req, res) => {
     }
 })
 
+router.post('/all', async (req,res) =>{
+  try{
+    const response = await scanAll();
+    res.status(200).json(response);
+  }catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+})
+
 export default router;

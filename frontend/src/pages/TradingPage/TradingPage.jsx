@@ -1,6 +1,6 @@
 // src/pages/TradingPage.jsx
 import React, { useState, useEffect, useMemo } from "react"
-import { useParams } from "react-router-dom"
+import { useLocation,useParams } from "react-router-dom"
 import useOrderFeed from "../../hooks/useOrderFeed";
 import TokenHeader from "../../components/Trading/TokenHeader"
 import TokenImage from "../../components/Trading/TokenImage"
@@ -11,26 +11,19 @@ import OrderForm from "../../components/Trading/OrderForm"
 import OrderHistory from "../../components/Trading/OrderHistory"
 import TopBar from "../../components/TopBar/TopBar"
 import SideBar from "../../components/SideBar/SideBar"
-import bulbasaurImage from "../../assets/p1.png";
 import config from "../../config/config"
 import axios from "axios";
 
 export default function TradingPage() {
-  const { tokenId } = useParams()
+  const { tokenId } = useParams();
+  const location = useLocation();
+  const info = location.state?.token;
   const config_t = {
-    tokenId: tokenId,
-    title: "2023 Japanese Pokémon 151 #2 Bulbasaur",
-    grade: "0 / 10",
-    imageUrl: bulbasaurImage,
-    price: 10.89,
-    usdPrice: 21.05,
-    change24h: 3.6,
-    marketCap: 1089000,
-    supply: 100000,
-    volume24h: 3500000
+    tokenId: info.id,
+    title: info.name,
+    grade: "0 / 10", //需要添加
+    imageUrl: info.image,
   }
-
-  // const comInfo = useState(null);
   const [asks, setAsk] = useState([]);
   const [bids, setBid] = useState([]);
   const [cardInfo, setCardInfo] = useState(null);
@@ -38,11 +31,10 @@ export default function TradingPage() {
   const [xrpUsd, setXrpUsd] = useState(0)
 
   const events = useOrderFeed();
-  console.log(config.BACKEND_ENDPOINT);
   const fectchInfo = async () => {
     try {
-      const response = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: "TESTHPS" }); // NEED TO CHANGE LATTER
-      const response2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`, { token: "5445535448505300000000000000000000000000" }); // NEED TO CHANGE LATTER
+      const response = await axios.post(`${config.BACKEND_ENDPOINT}/api/offers`, { currency: info.type });
+      const response2 = await axios.post(`${config.BACKEND_ENDPOINT}/api/search`, { token: config_t.tokenId });
       setAsk(response.data.currentOffer.sellOffers.map(o => [
         Number(o.quality) / 1_000_000,          // price per token
         Number(o.TakerGets.value)         // quantity
@@ -52,8 +44,8 @@ export default function TradingPage() {
         Number(o.TakerPays.value)         // quantity
       ]));
       setOrderHistory(response.data.orderHistory);
+      console.log(response.data.orderHistory);
       setCardInfo(response2.data);
-      console.log(response.data.currentOffer.buyOffers)
     } catch (err) {
       console.log(err);
       console.error('Error refreshing file list:', err);
@@ -90,7 +82,7 @@ export default function TradingPage() {
     switch (e.type) {
       /** full depth snapshot */
       case "DEPTH_UPDATE": {
-        if (e.payload.currency !== "TESTHPS") return;   // TODO replace hard‑code
+        if (e.payload.currency !== info.type) return;   // TODO replace hard‑code
 
         setAsk(
           e.payload.sellOffers.map(o => [
@@ -110,7 +102,7 @@ export default function TradingPage() {
       /** executed trade → order history */
       case "ORDER_FILLED": {
         const { fill, time } = e.payload;
-        if (fill.currency !== "TESTHPS") return;
+        if (fill.currency !== info.type) return;
 
         /* update history */
         setOrderHistory(h => [
@@ -168,9 +160,9 @@ export default function TradingPage() {
           <div className="w-2/5 flex flex-col p-2 h-full min-h-0">
             {/* Token header */}
             <TokenHeader
-              title={cardInfo?.type ?? '—'}
+              title={config_t.title}
               grade={config_t.grade}
-              tokenId={tokenId}
+              tokenId={config_t.tokenId}
             />
             {/* Main image fills rest */}
             <div className="flex-1 min-h-0 flex pt-7">
@@ -201,12 +193,12 @@ export default function TradingPage() {
 
             <div className="flex gap-4 flex-[0_0_40%] min-h-0">
               <PriceChart tokenId={tokenId} trades={orderHistory} className="flex-1 h-full min-h-0" />
-              <OrderBook tokenId={tokenId} bids={bids} asks={asks} className="w-1/5 h-full" />
+              <OrderBook tokenId={tokenId} bids={bids} asks={asks} lastPrice = {cardInfo?.price_rate ?? 0 } className="w-1/5 h-full" />
             </div>
 
-            <OrderForm tokenId={tokenId} currentPrice={10.89} />
+            <OrderForm tokenId={tokenId} currentPrice={cardInfo?.price_rate ?? 0} />
 
-            <OrderHistory tokenId={tokenId} orders={orderHistory} />
+            <OrderHistory tokenId = {tokenId} orders={orderHistory} />
           </div>
         </div>
       </div>

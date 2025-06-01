@@ -13,7 +13,7 @@ export default function TokenHeader({ title, grade, tokenId }) {
 
       {/* Token ID line */}
       <p className="mt-2 text-xl font-bold text-orange-500">
-        Token ID: {tokenId}
+        Token ID: <span className="text-sm">{tokenId}</span>
       </p>
     </div>
   )

@@ -1,11 +1,10 @@
 import React from "react"
 
 export default function OrderBook({
-  tokenId,
   className = "",
   asks,
   bids,
-  lastPrice = 10.9000
+  lastPrice = 0
 }) {
   return (
     <div className={`h-full flex flex-col items-center px-2 ${className}`}>

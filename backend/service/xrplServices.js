@@ -3,6 +3,9 @@ import { prepareBuyOffer, prepareSellOffer, getOrderBook, fetchTransaction } fro
 import { getHistoryOrder,uploadSellOrder } from "../models/orderOperation.js";
 import { updatePrice } from "../models/dbOperation.js";
 import { broadcast } from "../server.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 /**
  * Asks a user to authorize and send XRP to another wallet.
@@ -12,7 +15,7 @@ import { broadcast } from "../server.js";
  */
 export const sendXRP = async (sender, recipient, amount) => {
   try {
-    const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+    const client = new xrpl.Client(process.env.XRPL_ENDPOINT);
     await client.connect();
 
     const paymentTx = {
@@ -75,7 +78,7 @@ export const getTransactoinDetail = async (TxHash,currency) => {
   if(cur_tx.success === true){
     for(const f of cur_tx.fills){
       await uploadSellOrder(cur_tx.id,f.currency,f.xrpAmount/f.tokenAmount,f.tokenAmount,cur_tx.time,f.buyer,f.seller);
-      nft_token = xrpl.convertStringToHex(f.currency).padEnd(40, "0").toUpperCase();
+      const nft_token = xrpl.convertStringToHex(f.currency).padEnd(40, "0").toUpperCase();
       await updatePrice(nft_token,f.xrpAmount/f.tokenAmount);
     }
   }

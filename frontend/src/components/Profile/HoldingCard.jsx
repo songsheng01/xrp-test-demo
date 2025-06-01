@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const HoldingCard = ({ token }) => {
   const navigate = useNavigate();
-  const handleTrade   = () => navigate(`/trade/${token.symbol}`, { state: { token } })
+  const handleTrade   = () => navigate(`/trade/${token.name}`, { state: { token } })
   const handleRedeem  = () => navigate(`/redeem/${token.symbol}`, { state: { token } })
 
   const canRedeem = token.amount >= 1000

@@ -43,6 +43,7 @@ export async function fetchAvailableXrp(address) {
 export const WalletProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [xrpBalance, setXrpBalance] = useState(null);
+  const [tokenLines, setTokenLines] = useState([]); 
 
   const connectWallet = async () => {
     try {
@@ -54,6 +55,7 @@ export const WalletProvider = ({ children }) => {
         if (addr) {
           const bal = await fetchAvailableXrp(addr);
           setXrpBalance(bal);
+          await fetchTokens(addr);
         }
         return addr;
       } else {
@@ -122,9 +124,39 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
+  const fetchTokens = async (address) => {
+    try {
+      const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
+      await client.connect();
+
+      const resp = await client.request({
+        command: "account_lines",
+        account: address,
+        ledger_index: "validated",
+        limit: 200, // 如果信任线路很多，可以分页获取
+      });
+      const lines = resp.result.lines || [];
+
+      // 如果你只关心 currency 和 balance，可以这样提取：
+      const formatted = lines.map((line) => ({
+        currency: line.currency,
+        balance: line.balance,
+        issuer: line.account, // 这里的 account 就是该 currency 的发行方
+      }));
+
+      setTokenLines(formatted);
+      await client.disconnect();
+      return formatted;
+    } catch (err) {
+      console.error("fetchTokens error:", err);
+      setTokenLines([]);
+      return [];
+    }
+  };
+
   return (
     <WalletContext.Provider
-      value={{ walletAddress, xrpBalance, connectWallet, signAndSubmit, ensureTrustLine }}
+      value={{ walletAddress, xrpBalance,tokenLines, connectWallet, signAndSubmit, ensureTrustLine,fetchTokens }}
     >
       {children}
     </WalletContext.Provider>

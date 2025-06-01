@@ -1,11 +1,22 @@
-import React from "react"
+import React, { useContext } from "react"
+import { WalletContext } from "../../context/WalletContext";
 
-const demoOrders = [
-  { token: "BULBASAUR", side: "Buy",  amount: 25, value: 46.25, status: "Filled" },
-  { token: "BULBASAUR", side: "Sell", amount: 10, value: 18.20, status: "Open" }
-]
+export default function OrderHistory({tokenId,orders,className = "" }) {
+  const { walletAddress} = useContext(WalletContext);
+  const myOrders = orders.filter(order =>
+    order.buyer === walletAddress || order.seller === walletAddress
+  );
+  myOrders.sort((a, b) => {
+    return new Date(b.time) - new Date(a.time);
+  });
+  const demoOrders = myOrders.map(order => ({
+    token: tokenId,
+    side: order.buyer === walletAddress ? "Buy" : "Sell",
+    amount: order.quantity,
+    value: order.price,
+    status: "Filled"
+  }));
 
-export default function OrderHistory({ className = "" }) {
   return (
     <div
       className={`flex-1 overflow-y-auto bg-gray-50 rounded-xl p-4 ${className}`}
